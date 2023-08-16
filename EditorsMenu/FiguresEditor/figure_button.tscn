@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://ginnkf3qg603"]
+
+[ext_resource type="Texture2D" uid="uid://5xg35ok7ecq6" path="res://EditorsMenu/FiguresEditor/FiguresButtons.png" id="1_txw3q"]
+[ext_resource type="Script" path="res://EditorsMenu/FiguresEditor/figure_button.gd" id="2_xuor0"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s4gss"]
+atlas = ExtResource("1_txw3q")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a533g"]
+atlas = ExtResource("1_txw3q")
+region = Rect2(128, 128, 64, 64)
+
+[node name="FigureButton" type="TextureButton"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture_normal = SubResource("AtlasTexture_s4gss")
+texture_pressed = SubResource("AtlasTexture_a533g")
+script = ExtResource("2_xuor0")

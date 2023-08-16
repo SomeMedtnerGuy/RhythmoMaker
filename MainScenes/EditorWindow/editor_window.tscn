@@ -1,0 +1,175 @@
+[gd_scene load_steps=17 format=3 uid="uid://bpgyt2q4qebqt"]
+
+[ext_resource type="Script" path="res://MainScenes/EditorWindow/editor_window.gd" id="1_06pkd"]
+[ext_resource type="Script" path="res://Measure/staff.gd" id="2_tcf3h"]
+[ext_resource type="PackedScene" uid="uid://b1r7uottypc3k" path="res://PlaybackObjects/manual_highlight.tscn" id="3_0ymek"]
+[ext_resource type="PackedScene" uid="uid://titv1f3arlgm" path="res://PlaybackObjects/synchronizer.tscn" id="4_67bc7"]
+[ext_resource type="PackedScene" uid="uid://ddve6ma1p2w14" path="res://PlaybackObjects/manual_highlight_ui.tscn" id="5_hwvl5"]
+[ext_resource type="FontFile" uid="uid://dcprkn2psj6lk" path="res://AssetsAndResources/PublicPixel-z84yD.ttf" id="6_2sixr"]
+[ext_resource type="PackedScene" uid="uid://cefxhem88bimp" path="res://EditorsMenu/editors_menu.tscn" id="7_p0lq7"]
+[ext_resource type="Texture2D" uid="uid://by14tfo0wmrko" path="res://MainScenes/EditorWindow/ArrowButton.png" id="8_rpwtp"]
+[ext_resource type="Texture2D" uid="uid://ig2btybj8f41" path="res://MainScenes/EditorWindow/ArrowPressed.png" id="9_sfx88"]
+[ext_resource type="Texture2D" uid="uid://bo67lqrbnr5nn" path="res://MainScenes/EditorWindow/EraseButton.png" id="10_cytst"]
+[ext_resource type="Texture2D" uid="uid://dqfsn3vvpbvxn" path="res://MainScenes/EditorWindow/EraseButtonPressed.png" id="11_o555v"]
+[ext_resource type="Texture2D" uid="uid://eadxnb0lrul2" path="res://PlaybackObjects/PlayButton.png" id="12_8v7ey"]
+[ext_resource type="Texture2D" uid="uid://mqvrpsujuce8" path="res://PlaybackObjects/StopButtonPressed.png" id="13_pptx1"]
+[ext_resource type="Script" path="res://PlaybackObjects/playback_button.gd" id="14_3t1b5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pyj1h"]
+bg_color = Color(0, 0.470588, 0.6, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.156863, 0.34902, 1)
+
+[sub_resource type="Theme" id="Theme_7jcwy"]
+default_font = ExtResource("6_2sixr")
+Label/colors/font_color = Color(0, 0, 0, 1)
+Label/font_sizes/font_size = 20
+Label/fonts/font = ExtResource("6_2sixr")
+Label/styles/normal = SubResource("StyleBoxFlat_pyj1h")
+
+[node name="EditorWindow" type="Node"]
+script = ExtResource("1_06pkd")
+number_of_measures = 7
+
+[node name="InactiveIndicator" type="CanvasModulate" parent="."]
+visible = false
+color = Color(1, 1, 1, 0.392157)
+
+[node name="Staff" type="Node2D" parent="."]
+script = ExtResource("2_tcf3h")
+
+[node name="ManualHighlight" parent="." instance=ExtResource("3_0ymek")]
+
+[node name="Synchronizer" parent="." instance=ExtResource("4_67bc7")]
+_track_bpm = 50
+initial_delay = 0.53
+
+[node name="UiContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="UI" type="Control" parent="UiContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ManualHighlightUI" parent="UiContainer/UI" groups=["nodes_to_hide"] instance=ExtResource("5_hwvl5")]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -64.0
+offset_bottom = 0.0
+grow_vertical = 0
+
+[node name="PageNumberLabel" type="Label" parent="UiContainer/UI"]
+texture_filter = 1
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -319.0
+offset_top = -64.0
+offset_right = -135.0
+grow_horizontal = 0
+grow_vertical = 0
+theme = SubResource("Theme_7jcwy")
+text = "Página: 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Tools" type="Control" parent="UiContainer/UI" groups=["nodes_to_hide"]]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="EditorsMenu" parent="UiContainer/UI/Tools" instance=ExtResource("7_p0lq7")]
+layout_mode = 1
+offset_left = 111.0
+offset_right = -245.0
+offset_bottom = 64.0
+
+[node name="PreviousPageButton" type="TextureButton" parent="UiContainer/UI/Tools"]
+layout_mode = 1
+offset_right = 64.0
+offset_bottom = 64.0
+texture_normal = ExtResource("8_rpwtp")
+texture_pressed = ExtResource("9_sfx88")
+
+[node name="NextPageButton" type="TextureButton" parent="UiContainer/UI/Tools"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -64.0
+offset_bottom = 64.0
+grow_horizontal = 0
+texture_normal = ExtResource("8_rpwtp")
+texture_pressed = ExtResource("9_sfx88")
+flip_h = true
+
+[node name="EraseButton" type="TextureButton" parent="UiContainer/UI/Tools"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 408.0
+offset_right = 472.0
+offset_bottom = 64.0
+grow_horizontal = 2
+texture_normal = ExtResource("10_cytst")
+texture_pressed = ExtResource("11_o555v")
+
+[node name="PlaybackButton" type="TextureButton" parent="UiContainer/UI" groups=["nodes_to_hide"]]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -32.0
+offset_top = -64.0
+offset_right = 32.0
+grow_horizontal = 2
+grow_vertical = 0
+toggle_mode = true
+texture_normal = ExtResource("12_8v7ey")
+texture_pressed = ExtResource("13_pptx1")
+script = ExtResource("14_3t1b5")
+
+[connection signal="delay_set" from="ManualHighlight" to="." method="set_delay"]
+[connection signal="finished" from="ManualHighlight" to="." method="stop_manual_highlight"]
+[connection signal="pageturn_requested" from="ManualHighlight" to="." method="_on_pageturn_requested"]
+[connection signal="eop_reached" from="Synchronizer" to="." method="_on_synchronizer_eop_reached"]
+[connection signal="pageturn_requested" from="Synchronizer" to="." method="_on_pageturn_requested"]
+[connection signal="playback_finished" from="Synchronizer" to="." method="stop_playback"]
+[connection signal="enabled_disabled" from="UiContainer/UI/ManualHighlightUI" to="." method="_on_manual_highlight_enabled_disabled"]
+[connection signal="start_pressed" from="UiContainer/UI/ManualHighlightUI" to="." method="start_manual_highlight"]
+[connection signal="stop_pressed" from="UiContainer/UI/ManualHighlightUI" to="." method="stop_manual_highlight"]
+[connection signal="barline_chosen" from="UiContainer/UI/Tools/EditorsMenu" to="." method="_on_tools_menu_barline_chosen"]
+[connection signal="figure_chosen" from="UiContainer/UI/Tools/EditorsMenu" to="." method="_on_figure_buttons_container_figure_chosen"]
+[connection signal="pressed" from="UiContainer/UI/Tools/PreviousPageButton" to="." method="_on_previous_page_button_pressed"]
+[connection signal="pressed" from="UiContainer/UI/Tools/NextPageButton" to="." method="_on_next_page_button_pressed"]
+[connection signal="pressed" from="UiContainer/UI/Tools/EraseButton" to="." method="_on_erase_button_pressed"]
+[connection signal="toggled" from="UiContainer/UI/PlaybackButton" to="UiContainer/UI/PlaybackButton" method="_on_toggled"]
+[connection signal="toggled_down" from="UiContainer/UI/PlaybackButton" to="." method="start_playback"]
+[connection signal="toggled_up" from="UiContainer/UI/PlaybackButton" to="." method="stop_playback"]

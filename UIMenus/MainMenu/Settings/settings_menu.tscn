@@ -1,0 +1,62 @@
+[gd_scene load_steps=3 format=3 uid="uid://ba7djs7p5ku1c"]
+
+[ext_resource type="Theme" uid="uid://0h50ls5hrk6i" path="res://AssetsAndResources/main_theme.tres" id="1_erf0a"]
+[ext_resource type="LabelSettings" uid="uid://n2d5yag6peyq" path="res://AssetsAndResources/TitleLabelSettings.tres" id="3_yk5p0"]
+
+[node name="SettingsMenu" type="PanelContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -94.0
+offset_right = 100.0
+offset_bottom = 94.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_erf0a")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Definições"
+label_settings = ExtResource("3_yk5p0")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_bottom = 60
+
+[node name="OptionsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="GeneralSettings" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" groups=["menu_button"]]
+layout_mode = 2
+text = "Gerais"
+
+[node name="ManualSettings" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer"]
+layout_mode = 2
+text = "Modo Manual"
+
+[node name="AutomaticSettings" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer"]
+layout_mode = 2
+text = "Modo Automático"
+
+[node name="OtherButtonsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Return" type="Button" parent="MarginContainer/VBoxContainer/OtherButtonsContainer" groups=["return_button"]]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Voltar"

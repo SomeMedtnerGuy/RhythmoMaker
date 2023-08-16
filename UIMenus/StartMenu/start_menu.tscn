@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://t4wprlltmy2t"]
+
+[ext_resource type="PackedScene" uid="uid://yx0e6j2h537r" path="res://BaseObjects/base_menu.tscn" id="1_84kkr"]
+
+[node name="StartMenu" instance=ExtResource("1_84kkr")]
+
+[node name="TitleLabel" parent="MarginContainer/VBoxContainer" index="0"]
+text = "Início"
+
+[node name="New" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" index="0" groups=["menu_button"]]
+layout_mode = 2
+text = "Novo"
+
+[node name="Open" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" index="1" groups=["menu_button"]]
+layout_mode = 2
+text = "Abrir"
+
+[node name="Quit" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" index="2" groups=["quit_button"]]
+layout_mode = 2
+text = "Sair"

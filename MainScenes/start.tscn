@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3i0f1t4fjgqy"]
+
+[ext_resource type="PackedScene" uid="uid://bk62yj03uw07q" path="res://UIMenus/Trees/start_menu_tree.tscn" id="1_mir7o"]
+[ext_resource type="Theme" uid="uid://0h50ls5hrk6i" path="res://AssetsAndResources/main_theme.tres" id="2_0i7ml"]
+
+[node name="Start" type="Node"]
+
+[node name="StartMenuTree" parent="." instance=ExtResource("1_mir7o")]
+
+[node name="TitlePanel" type="PanelContainer" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -229.0
+offset_top = 64.0
+offset_right = 229.0
+offset_bottom = 148.0
+grow_horizontal = 2
+theme = ExtResource("2_0i7ml")
+
+[node name="Panel" type="Panel" parent="TitlePanel"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="TitlePanel"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="TitleLabel" type="Label" parent="TitlePanel/MarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "RhythmoMaker"

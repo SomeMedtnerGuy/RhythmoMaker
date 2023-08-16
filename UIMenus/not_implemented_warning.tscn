@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3 uid="uid://cju1wkj6avqnc"]
+
+[ext_resource type="Theme" uid="uid://0h50ls5hrk6i" path="res://AssetsAndResources/main_theme.tres" id="1_tafuq"]
+
+[node name="NotImplementedWarning" type="PanelContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -83.0
+offset_top = -57.5
+offset_right = 83.0
+offset_bottom = 57.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_tafuq")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 27
+
+[node name="MessageLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Funcionalidade ainda
+ não implementada"
+
+[node name="Return" type="Button" parent="MarginContainer/VBoxContainer" groups=["return_button"]]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Voltar"

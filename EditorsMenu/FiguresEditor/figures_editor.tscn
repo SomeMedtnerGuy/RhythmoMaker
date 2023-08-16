@@ -1,0 +1,113 @@
+[gd_scene load_steps=18 format=3 uid="uid://cvax6006mob8e"]
+
+[ext_resource type="Script" path="res://EditorsMenu/FiguresEditor/figures_editor.gd" id="1_3y2lv"]
+[ext_resource type="Texture2D" uid="uid://5xg35ok7ecq6" path="res://EditorsMenu/FiguresEditor/FiguresButtons.png" id="2_k1ney"]
+[ext_resource type="PackedScene" uid="uid://ginnkf3qg603" path="res://EditorsMenu/FiguresEditor/figure_button.tscn" id="3_3u3xq"]
+[ext_resource type="Texture2D" uid="uid://caum2ckix5j" path="res://EditorsMenu/FiguresEditor/DottedButton.png" id="4_3lvlt"]
+[ext_resource type="Texture2D" uid="uid://byheveavdy8v3" path="res://EditorsMenu/FiguresEditor/DottedButtonPressed.png" id="5_ct1im"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_77pvi"]
+atlas = ExtResource("2_k1ney")
+region = Rect2(128, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jiacl"]
+atlas = ExtResource("2_k1ney")
+region = Rect2(128, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lup8p"]
+atlas = ExtResource("2_k1ney")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kw27g"]
+atlas = ExtResource("2_k1ney")
+region = Rect2(0, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cyv4b"]
+atlas = ExtResource("2_k1ney")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3rt5l"]
+atlas = ExtResource("2_k1ney")
+region = Rect2(64, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6abm6"]
+atlas = ExtResource("2_k1ney")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ulqkc"]
+atlas = ExtResource("2_k1ney")
+region = Rect2(128, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iygiy"]
+atlas = ExtResource("2_k1ney")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vu26p"]
+atlas = ExtResource("2_k1ney")
+region = Rect2(192, 128, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yhicl"]
+atlas = ExtResource("2_k1ney")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gdwiw"]
+atlas = ExtResource("2_k1ney")
+region = Rect2(256, 128, 64, 64)
+
+[node name="FiguresEditor" type="HBoxContainer"]
+custom_minimum_size = Vector2(570, 0)
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 64.0
+grow_horizontal = 2
+theme_override_constants/separation = 45
+alignment = 1
+script = ExtResource("1_3y2lv")
+
+[node name="RestToggleButton" type="TextureButton" parent="."]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+toggle_mode = true
+texture_normal = SubResource("AtlasTexture_77pvi")
+texture_pressed = SubResource("AtlasTexture_jiacl")
+
+[node name="NotesContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Whole" parent="NotesContainer" instance=ExtResource("3_3u3xq")]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_lup8p")
+texture_pressed = SubResource("AtlasTexture_kw27g")
+duration = 4.0
+
+[node name="Half" parent="NotesContainer" instance=ExtResource("3_3u3xq")]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_cyv4b")
+texture_pressed = SubResource("AtlasTexture_3rt5l")
+duration = 2.0
+
+[node name="Quarter" parent="NotesContainer" instance=ExtResource("3_3u3xq")]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_6abm6")
+texture_pressed = SubResource("AtlasTexture_ulqkc")
+
+[node name="Eighth" parent="NotesContainer" instance=ExtResource("3_3u3xq")]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_iygiy")
+texture_pressed = SubResource("AtlasTexture_vu26p")
+duration = 0.5
+
+[node name="Sixteenth" parent="NotesContainer" instance=ExtResource("3_3u3xq")]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_yhicl")
+texture_pressed = SubResource("AtlasTexture_gdwiw")
+duration = 0.25
+
+[node name="DottedToggleButton" type="TextureButton" parent="."]
+layout_mode = 2
+toggle_mode = true
+texture_normal = ExtResource("4_3lvlt")
+texture_pressed = ExtResource("5_ct1im")
+
+[connection signal="toggled" from="RestToggleButton" to="." method="_on_rest_toggle_button_toggled"]
+[connection signal="toggled" from="DottedToggleButton" to="." method="_on_dotted_toggle_button_toggled"]

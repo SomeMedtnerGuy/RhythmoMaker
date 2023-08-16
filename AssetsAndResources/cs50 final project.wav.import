@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bxb5artp8r5dk"
+path="res://.godot/imported/cs50 final project.wav-e69856e9246db7ba5c474ff62a35cab2.sample"
+
+[deps]
+
+source_file="res://AssetsAndResources/cs50 final project.wav"
+dest_files=["res://.godot/imported/cs50 final project.wav-e69856e9246db7ba5c474ff62a35cab2.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

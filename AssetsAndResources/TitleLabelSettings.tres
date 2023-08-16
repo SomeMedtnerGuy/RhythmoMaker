@@ -1,0 +1,10 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://n2d5yag6peyq"]
+
+[ext_resource type="FontFile" uid="uid://dcprkn2psj6lk" path="res://AssetsAndResources/PublicPixel-z84yD.ttf" id="1_lc4jb"]
+
+[resource]
+line_spacing = 10.0
+font = ExtResource("1_lc4jb")
+font_size = 30
+font_color = Color(0, 0, 0, 1)
+outline_size = 5

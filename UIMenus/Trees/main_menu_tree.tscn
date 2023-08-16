@@ -1,0 +1,101 @@
+[gd_scene load_steps=12 format=3 uid="uid://x40j3p2tldku"]
+
+[ext_resource type="Script" path="res://UIMenus/Trees/main_menu_tree.gd" id="1_su15j"]
+[ext_resource type="Texture2D" uid="uid://civepa5lxx2od" path="res://UIMenus/MainMenu/MenuButton.png" id="2_wmkc6"]
+[ext_resource type="Texture2D" uid="uid://bnep00411ylgq" path="res://UIMenus/MainMenu/MenuButtonPressed.png" id="3_grfpv"]
+[ext_resource type="PackedScene" uid="uid://1kax1m2qtucf" path="res://UIMenus/MainMenu/main_menu.tscn" id="4_2hup1"]
+[ext_resource type="PackedScene" uid="uid://ba7djs7p5ku1c" path="res://UIMenus/MainMenu/Settings/settings_menu.tscn" id="5_slmif"]
+[ext_resource type="PackedScene" uid="uid://bbt7alb8u3lnj" path="res://UIMenus/StartMenu/new_project_menu.tscn" id="6_b18xp"]
+[ext_resource type="PackedScene" uid="uid://cl0nm18qonx54" path="res://UIMenus/MainMenu/Settings/General/general_settings_menu.tscn" id="7_lyfok"]
+[ext_resource type="PackedScene" uid="uid://cuovhpbblqtgc" path="res://UIMenus/MainMenu/Settings/General/add_measures_menu.tscn" id="8_5jsvp"]
+[ext_resource type="PackedScene" uid="uid://bjmtetewwmlk2" path="res://UIMenus/MainMenu/Settings/AutomaticMode/automatic_mode_settings_menu.tscn" id="8_nm3m3"]
+[ext_resource type="PackedScene" uid="uid://bvgratabirnfx" path="res://UIMenus/MainMenu/Settings/General/remove_measures_menu.tscn" id="9_4iync"]
+[ext_resource type="PackedScene" uid="uid://cju1wkj6avqnc" path="res://UIMenus/not_implemented_warning.tscn" id="9_dp54j"]
+
+[node name="MainMenuTree" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_su15j")
+
+[node name="MainButton" type="TextureButton" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -64.0
+offset_top = -64.0
+grow_horizontal = 0
+grow_vertical = 0
+texture_normal = ExtResource("2_wmkc6")
+texture_pressed = ExtResource("3_grfpv")
+
+[node name="Main" parent="." instance=ExtResource("4_2hup1")]
+visible = false
+layout_mode = 1
+
+[node name="Settings" parent="." instance=ExtResource("5_slmif")]
+visible = false
+layout_mode = 1
+offset_left = -279.0
+offset_top = -189.0
+offset_right = 279.0
+offset_bottom = 189.0
+
+[node name="New" parent="." instance=ExtResource("6_b18xp")]
+visible = false
+layout_mode = 1
+offset_left = -265.0
+offset_top = -154.0
+offset_right = 265.0
+offset_bottom = 154.0
+
+[node name="GeneralSettings" parent="." instance=ExtResource("7_lyfok")]
+visible = false
+layout_mode = 1
+offset_left = -369.0
+offset_top = -168.0
+offset_right = 369.0
+offset_bottom = 168.0
+
+[node name="AddMeasures" parent="." instance=ExtResource("8_5jsvp")]
+visible = false
+layout_mode = 1
+offset_left = -340.0
+offset_top = -140.0
+offset_right = 340.0
+offset_bottom = 140.0
+
+[node name="RemoveMeasures" parent="." instance=ExtResource("9_4iync")]
+visible = false
+layout_mode = 1
+offset_left = -280.0
+offset_top = -140.0
+offset_right = 280.0
+offset_bottom = 140.0
+
+[node name="AutomaticModeSettings" parent="." instance=ExtResource("8_nm3m3")]
+visible = false
+layout_mode = 1
+offset_left = -250.0
+offset_top = -128.0
+offset_right = 250.0
+offset_bottom = 128.0
+
+[node name="NotImplementedWarning" parent="." instance=ExtResource("9_dp54j")]
+visible = false
+layout_mode = 1
+offset_left = -185.0
+offset_top = -68.5
+offset_right = 185.0
+offset_bottom = 68.5
+
+[connection signal="pressed" from="MainButton" to="." method="_on_main_button_pressed"]
+[connection signal="visibility_changed" from="MainButton" to="." method="_on_main_visibility_changed"]

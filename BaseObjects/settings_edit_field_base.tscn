@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://d166ixo2ko56k"]
+
+[ext_resource type="FontFile" uid="uid://dcprkn2psj6lk" path="res://AssetsAndResources/PublicPixel-z84yD.ttf" id="1_4jxre"]
+[ext_resource type="Theme" uid="uid://0h50ls5hrk6i" path="res://AssetsAndResources/main_theme.tres" id="1_ne5gt"]
+[ext_resource type="Script" path="res://BaseObjects/settings_edit_field_base.gd" id="2_ps6sh"]
+
+[node name="SettingsEditField" type="HBoxContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme = ExtResource("1_ne5gt")
+script = ExtResource("2_ps6sh")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_4jxre")
+text = "Setting to edit:"
+
+[node name="LineEdit" type="LineEdit" parent="."]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_fonts/font = ExtResource("1_4jxre")
+text = "4"
+
+[connection signal="text_changed" from="LineEdit" to="." method="_on_line_edit_text_changed"]

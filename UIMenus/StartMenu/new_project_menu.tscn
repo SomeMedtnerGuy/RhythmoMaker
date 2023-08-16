@@ -1,0 +1,83 @@
+[gd_scene load_steps=5 format=3 uid="uid://bbt7alb8u3lnj"]
+
+[ext_resource type="Theme" uid="uid://0h50ls5hrk6i" path="res://AssetsAndResources/main_theme.tres" id="1_8iqfa"]
+[ext_resource type="Script" path="res://UIMenus/StartMenu/new_project_menu.gd" id="2_jsmyj"]
+[ext_resource type="LabelSettings" uid="uid://n2d5yag6peyq" path="res://AssetsAndResources/TitleLabelSettings.tres" id="3_aungq"]
+[ext_resource type="PackedScene" uid="uid://d166ixo2ko56k" path="res://BaseObjects/settings_edit_field_base.tscn" id="4_x88q5"]
+
+[node name="NewProjectMenu" type="PanelContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -94.0
+offset_right = 100.0
+offset_bottom = 94.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_8iqfa")
+script = ExtResource("2_jsmyj")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Novo Projeto"
+label_settings = ExtResource("3_aungq")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_bottom = 60
+
+[node name="OptionsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="MeasuresAmount" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" instance=ExtResource("4_x88q5")]
+layout_mode = 2
+
+[node name="Label" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/MeasuresAmount" index="0"]
+text = "Número de compassos: "
+
+[node name="LineEdit" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/MeasuresAmount" index="1"]
+caret_blink = true
+caret_blink_interval = 0.5
+
+[node name="BeatsPerMeasure" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" instance=ExtResource("4_x88q5")]
+layout_mode = 2
+
+[node name="Label" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/BeatsPerMeasure" index="0"]
+text = "Tempos por compasso: "
+
+[node name="LineEdit" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/BeatsPerMeasure" index="1"]
+caret_blink = true
+caret_blink_interval = 0.5
+
+[node name="OtherButtonsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Return" type="Button" parent="MarginContainer/VBoxContainer/OtherButtonsContainer" groups=["return_button"]]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Voltar"
+
+[node name="Create" type="Button" parent="MarginContainer/VBoxContainer/OtherButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Criar"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/OtherButtonsContainer/Create" to="." method="_on_create_button_pressed"]
+
+[editable path="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/MeasuresAmount"]
+[editable path="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/BeatsPerMeasure"]

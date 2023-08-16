@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://bjmtetewwmlk2"]
+
+[ext_resource type="PackedScene" uid="uid://yx0e6j2h537r" path="res://BaseObjects/base_menu.tscn" id="1_ihfjq"]
+
+[node name="AutomaticModeSettingsMenu" instance=ExtResource("1_ihfjq")]
+
+[node name="TitleLabel" parent="MarginContainer/VBoxContainer" index="0"]
+text = "Modo Automático"
+
+[node name="Return" type="Button" parent="MarginContainer/VBoxContainer/OtherButtonsContainer" index="0" groups=["return_button"]]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Voltar"
+
+[node name="Save" type="Button" parent="MarginContainer/VBoxContainer/OtherButtonsContainer" index="1"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Gravar"
