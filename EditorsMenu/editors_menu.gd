@@ -3,7 +3,7 @@ extends PanelContainer
 
 
 ## Signals for when options that need to be handled by a different class are chosen:
-signal figure_chosen(duration: float, is_rest: bool)
+signal figure_chosen(figure_specs: Dictionary)
 signal barline_chosen(barline: Types.BARLINES)
 
 ## Color the editor_button should take when chosen and its editor is active
@@ -18,35 +18,43 @@ enum EDITOR { NONE, FIGURES, BARLINES, DYNAMICS, ORFF, SECTIONS }
 
 ## Variable that holds the currently draggable object
 var _draggable: Selectable
+var trash_hovered := false
 
 ## Dictionaries that connect the different marker options to their respective sprites
 var dynamics_markers := {
-	
+	Types.DYNAMICS.PIANISSIMO: "res://EditorsMenu/DynamicsEditor/Markers/DynamicsMarkers_1.png",
+	Types.DYNAMICS.PIANO: "res://EditorsMenu/DynamicsEditor/Markers/DynamicsMarkers_2.png",
+	Types.DYNAMICS.MEZZOPIANO: "res://EditorsMenu/DynamicsEditor/Markers/DynamicsMarkers_3.png",
+	Types.DYNAMICS.MEZZOFORTE: "res://EditorsMenu/DynamicsEditor/Markers/DynamicsMarkers_4.png",
+	Types.DYNAMICS.FORTE: "res://EditorsMenu/DynamicsEditor/Markers/DynamicsMarkers_5.png",
+	Types.DYNAMICS.FORTISSIMO: "res://EditorsMenu/DynamicsEditor/Markers/DynamicsMarkers_6.png",
+	Types.DYNAMICS.CRESCENDO: "res://EditorsMenu/DynamicsEditor/Markers/DynamicsMarkers_7.png",
+	Types.DYNAMICS.DIMINUENDO: "res://EditorsMenu/DynamicsEditor/Markers/DynamicsMarkers_8.png"
 }
 
 var orffs_markers := {
-	Types.ORFFS.RHYTHM_STICKS: preload("res://EditorsMenu/OrffEditor/Markers/OrffsMarkers_1.png"),
-	Types.ORFFS.MARACAS: preload("res://EditorsMenu/OrffEditor/Markers/OrffsMarkers_2.png"),
-	Types.ORFFS.WOODBLOCK: preload("res://EditorsMenu/OrffEditor/Markers/OrffsMarkers_3.png"),
-	Types.ORFFS.BELL_STRAPS: preload("res://EditorsMenu/OrffEditor/Markers/OrffsMarkers_4.png"),
-	Types.ORFFS.TUBULAR_WOODBLOCK: preload("res://EditorsMenu/OrffEditor/Markers/OrffsMarkers_5.png"),
-	Types.ORFFS.TRIANGLE: preload("res://EditorsMenu/OrffEditor/Markers/OrffsMarkers_6.png"),
-	Types.ORFFS.CYMBALS: preload("res://EditorsMenu/OrffEditor/Markers/OrffsMarkers_7.png"),
-	Types.ORFFS.TAMBOURINE: preload("res://EditorsMenu/OrffEditor/Markers/OrffsMarkers_8.png"),
-	Types.ORFFS.HAND_DRUM: preload("res://EditorsMenu/OrffEditor/Markers/OrffsMarkers_9.png"),
-	Types.ORFFS.RECO_RECO: preload("res://EditorsMenu/OrffEditor/Markers/OrffsMarkers_10.png"),
-	Types.ORFFS.CASTANETS: preload("res://EditorsMenu/OrffEditor/Markers/OrffsMarkers_11.png"),
+	Types.ORFFS.RHYTHM_STICKS: "res://EditorsMenu/OrffEditor/Markers/OrffsMarkers2_1.png",
+	Types.ORFFS.MARACAS: "res://EditorsMenu/OrffEditor/Markers/OrffsMarkers2_2.png",
+	Types.ORFFS.WOODBLOCK: "res://EditorsMenu/OrffEditor/Markers/OrffsMarkers2_3.png",
+	Types.ORFFS.BELL_STRAPS: "res://EditorsMenu/OrffEditor/Markers/OrffsMarkers2_4.png",
+	Types.ORFFS.TUBULAR_WOODBLOCK: "res://EditorsMenu/OrffEditor/Markers/OrffsMarkers2_5.png",
+	Types.ORFFS.TRIANGLE: "res://EditorsMenu/OrffEditor/Markers/OrffsMarkers2_6.png",
+	Types.ORFFS.CYMBALS: "res://EditorsMenu/OrffEditor/Markers/OrffsMarkers2_7.png",
+	Types.ORFFS.TAMBOURINE: "res://EditorsMenu/OrffEditor/Markers/OrffsMarkers2_8.png",
+	Types.ORFFS.HAND_DRUM: "res://EditorsMenu/OrffEditor/Markers/OrffsMarkers2_9.png",
+	Types.ORFFS.RECO_RECO: "res://EditorsMenu/OrffEditor/Markers/OrffsMarkers2_10.png",
+	Types.ORFFS.CASTANETS: "res://EditorsMenu/OrffEditor/Markers/OrffsMarkers2_11.png",
 }
 
 var sections_markers := {
-	Types.SECTIONS.A: preload("res://EditorsMenu/SectionsEditor/Markers/SectionsMarkerA.png"),
-	Types.SECTIONS.B: preload("res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersB.png"),
-	Types.SECTIONS.C: preload("res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersC.png"),
-	Types.SECTIONS.D: preload("res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersD.png"),
-	Types.SECTIONS.E: preload("res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersE.png"),
-	Types.SECTIONS.F: preload("res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersF.png"),
-	Types.SECTIONS.G: preload("res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersG.png"),
-	Types.SECTIONS.H: preload("res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersH.png")
+	Types.SECTIONS.A: "res://EditorsMenu/SectionsEditor/Markers/SectionsMarkerA.png",
+	Types.SECTIONS.B: "res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersB.png",
+	Types.SECTIONS.C: "res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersC.png",
+	Types.SECTIONS.D: "res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersD.png",
+	Types.SECTIONS.E: "res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersE.png",
+	Types.SECTIONS.F: "res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersF.png",
+	Types.SECTIONS.G: "res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersG.png",
+	Types.SECTIONS.H: "res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersH.png"
 }
 ## And this one connects the types of editor to their respective dictionary of markers
 var type_to_markers := {
@@ -58,6 +66,7 @@ var type_to_markers := {
 ## Keeps track of which editor is open
 var active_editor := EDITOR.NONE
 
+@onready var markers: Node2D = $Markers
 ## The node that holds all the editors, where the user can choose one to be open
 @onready var editor_options_container := $EditorOptionsContainer
 ## This node holds all the editors themselves, but only the active editor is visible
@@ -94,6 +103,29 @@ var active_editor := EDITOR.NONE
 func _process(_delta: float) -> void:
 	if _draggable:
 		_draggable.position = get_global_mouse_position()
+
+
+func save_data() -> Dictionary:
+	var markers_list := []
+	for marker in markers.get_children():
+		markers_list.append(
+			{
+				"pos_x": marker.global_position.x,
+				"pos_y": marker.global_position.y,
+				"texture_path": marker.texture_path
+			}
+		)
+	
+	return {"markers": markers_list}
+
+
+func load_data(specs: Dictionary) -> void:
+	for marker in specs.markers:
+		create_draggable(marker.texture_path)
+		_draggable.global_position = Vector2(marker.pos_x, marker.pos_y)
+		
+		_draggable.selected = false
+		_draggable = null
 
 
 ## All editor buttons are connected to this function. It opens the chosen editor (makes it visible.
@@ -219,8 +251,8 @@ func fade_out_active_editor() -> void:
 
 
 ## The only two editors that need to forward choices are figures and barlines, because the alterations are made directly on the measures, which EditorsMenu doesn't have access to. The following two callbacks do just that
-func _on_figures_editor_figure_chosen(duration: float, is_rest: bool) -> void:
-	figure_chosen.emit(duration, is_rest)
+func _on_figures_editor_figure_chosen(figure_specs: Dictionary) -> void:
+	figure_chosen.emit(figure_specs)
 
 
 func _on_barlines_editor_barline_chosen(barline: Types.BARLINES) -> void:
@@ -229,18 +261,21 @@ func _on_barlines_editor_barline_chosen(barline: Types.BARLINES) -> void:
 
 ## All other editors create draggables upon choice made, so they are connected here instead. 
 func _on_editor_draggable_chosen(option) -> void:
-	create_draggable(type_to_markers[active_editor], option)
+	var markers_dict: Dictionary = type_to_markers[active_editor]
+	var draggable_texture_path: String = markers_dict[option]
+	create_draggable(draggable_texture_path)
 
 ## A draggable is an object that, when selected, moves along with the mouse.
-func create_draggable(markers: Dictionary, option: int) -> void:
+func create_draggable(texture_path: String) -> void:
 	# If this variable is not null, it means there is already an object being dragged. Only one at a time is allowed, so nothing happens if that is the case.
 	if _draggable:
 		return
 	
 	_draggable = SELECTABLE_SCENE.instantiate()
-	add_child(_draggable)
+	markers.add_child(_draggable)
 	# "markers" links an enum value to a texture resource. That enum value represents the marker chosen to be created. Therefore, the texture that it is linked to should be the texture of the sprite of the draggable object.
-	_draggable.sprite.texture = markers[option]
+	_draggable.sprite.texture = load(texture_path)
+	_draggable.texture_path = texture_path
 	# This allows for the marker to always be shown above everything else (except markers created afterwards, which also run this method)
 	_draggable.set_as_top_level(true)
 	_draggable.selection_toggled.connect(_on_draggable_selection_toggled)
@@ -252,4 +287,10 @@ func _on_draggable_selection_toggled(draggable, was_selected) -> void:
 	if was_selected:
 		_draggable = draggable
 	else:
+		if trash_hovered:
+			_draggable.queue_free()
 		_draggable = null
+
+
+func _on_hover_over_trash(is_hovered: bool) -> void:
+	trash_hovered = is_hovered

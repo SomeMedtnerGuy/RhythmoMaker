@@ -2,7 +2,7 @@ class_name Measure
 extends Area2D
 
 ## Sends out the selected state, passing itself so the editor can have a reference to it
-signal selected_changed(is_selected, measure)
+signal selected_changed(measure)
 
 const BARLINES_SPRITESHEET := preload("res://Measure/Barlines.png")
 
@@ -26,7 +26,7 @@ var highlighted := false:
 		highlighted = value
 		# Visual queue on the selection
 		selection_rect.visible = value
-		selected_changed.emit(value, self)
+
 
 
 var barline_type := Types.BARLINES.SINGLE:
@@ -45,8 +45,28 @@ var barline_type := Types.BARLINES.SINGLE:
 @onready var measure_length: float = $Path2D.curve.get_baked_length()
 
 
+func save_data() -> Dictionary:
+	var figures_list := []
+	for figure in figures.get_children():
+		figures_list.append(figure.save_data())
+	var save_dict := {
+		"barline_type": barline_type,
+		"figures": figures_list
+	}
+	return save_dict
+
+
+func load_figures(figures_list: Array) -> void:
+	for figure_specs in figures_list:
+		place_figure(figure_specs)
+
+
+
 ## Places a rhythmic figure with duration "duration" in the measure
-func place_figure(duration: float, is_rest: bool) -> void:
+func place_figure(figure_specs: Dictionary) -> void:
+	var duration: float = figure_specs.duration
+	var is_rest: bool = figure_specs.is_rest
+	
 	var current_duration := calculate_current_duration()
 	
 	# In case the added figure makes the measure too long, dont place it
@@ -82,7 +102,7 @@ func place_figure(duration: float, is_rest: bool) -> void:
 		
 		# If total current duration is the duration of the entire page, set the figure as being the last of it, so highlighter knows when to request a pageturn.
 		# This check is made inside the previous if-statement so <1.0 duration notes do not pass the check when converted to int (any notes placed right after the pageturn would pass it.)
-		if int(current_duration) % 16 == 0:
+		if int(current_duration) == beats_amount * 4:
 			figure.is_last_of_page = true
 
 
@@ -136,3 +156,4 @@ func delete_last_figure() -> void:
 func _on_input_event(_v, event: InputEvent, _s):
 	if event.is_action_pressed("left-click"):
 		highlighted = not highlighted
+		selected_changed.emit(self)

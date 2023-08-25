@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://UIMenus/Trees/start_menu_tree.gd" id="1_7lnxu"]
 [ext_resource type="PackedScene" uid="uid://t4wprlltmy2t" path="res://UIMenus/StartMenu/start_menu.tscn" id="1_adncn"]
 [ext_resource type="PackedScene" uid="uid://bbt7alb8u3lnj" path="res://UIMenus/StartMenu/new_project_menu.tscn" id="2_gri7x"]
-[ext_resource type="PackedScene" uid="uid://cju1wkj6avqnc" path="res://UIMenus/not_implemented_warning.tscn" id="4_1uy0g"]
+[ext_resource type="PackedScene" uid="uid://c2btivcth2gxk" path="res://UIMenus/StartMenu/open_menu.tscn" id="4_y8fdm"]
 
 [node name="StartMenuTree" type="Control"]
 layout_mode = 3
@@ -29,6 +29,10 @@ offset_top = -154.0
 offset_right = 265.0
 offset_bottom = 154.0
 
-[node name="Open" parent="." instance=ExtResource("4_1uy0g")]
+[node name="Open" parent="." instance=ExtResource("4_y8fdm")]
 visible = false
 layout_mode = 1
+offset_left = -320.0
+offset_top = -163.5
+offset_right = 320.0
+offset_bottom = 163.5

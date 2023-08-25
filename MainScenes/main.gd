@@ -12,7 +12,7 @@ const scenes :={
 
 func _ready() -> void:
 	# This signal is emitted by the new_project_menu's "create" button, the only button that triggers a scene change.
-	EventBus.new_project_setup_complete.connect(_on_new_project_setup_complete)
+	EventBus.project_specs_defined.connect(_on_project_specs_defined)
 	
 	change_scene(SCENES.START)
 
@@ -32,5 +32,5 @@ func change_scene(scene: SCENES, specs: Dictionary = {}) -> void:
 
 
 ## Callback for when the user presses "create" in the new_project_menu
-func _on_new_project_setup_complete(specs) -> void:
+func _on_project_specs_defined(specs: Dictionary) -> void:
 	change_scene(SCENES.WORKSPACE, specs)

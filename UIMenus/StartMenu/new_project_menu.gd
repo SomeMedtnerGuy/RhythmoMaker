@@ -2,6 +2,7 @@ extends PanelContainer
 
 ## The specs that can be set by the user. They are linked to their default values
 var specs := {
+	new = true,
 	measures_amount = 4,
 	beats_per_measure = 4
 }
@@ -22,4 +23,4 @@ func _on_create_button_pressed() -> void:
 	# "value" is the variable that holds what is written in the edit_field already cast to the right type
 	specs.measures_amount = measures_amount.value
 	specs.beats_per_measure = beats_per_measure.value
-	EventBus.new_project_setup_complete.emit(specs)
+	EventBus.project_specs_defined.emit(specs)

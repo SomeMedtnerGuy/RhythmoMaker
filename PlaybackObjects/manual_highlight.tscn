@@ -1,10 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b1r7uottypc3k"]
+[gd_scene load_steps=2 format=3 uid="uid://b1r7uottypc3k"]
 
 [ext_resource type="Script" path="res://PlaybackObjects/manual_highlight.gd" id="1_re8hn"]
-[ext_resource type="AudioStream" uid="uid://dshtvw3isohsf" path="res://AssetsAndResources/14-14 Faixa de Ã¡udio.mp3" id="2_ymqli"]
 
 [node name="ManualHighlight" type="Node"]
 script = ExtResource("1_re8hn")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("2_ymqli")

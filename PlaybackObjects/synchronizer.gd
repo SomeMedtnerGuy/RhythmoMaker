@@ -4,7 +4,6 @@ extends Node
 ## Emitted everytime a figure is played
 signal figure_played
 signal pageturn_requested
-signal eop_reached
 signal playback_finished
 
 
@@ -33,10 +32,24 @@ func _ready():
 	set_process(false)
 
 
+func save_data() -> Dictionary:
+	var data := {}
+	data.audio = audio_stream_player.stream
+	data.initial_delay = initial_delay
+	
+	return data
+
+
+func load_data(specs: Dictionary) -> void:
+	audio_stream_player.stream = load(specs.audio)
+	initial_delay = specs.initial_delay
+
+
 func setup(highlighter: Highlighter) -> void:
 	_highlighter = highlighter
 	_highlighter.end_of_figures_reached.connect(_on_highlighter_end_of_figures_reached)
 	_highlighter.pageturn_requested.connect(_on_highlighter_pageturn_requested)
+
 
 
 func _process(_delta):
@@ -51,12 +64,14 @@ func _process(_delta):
 	# Keeps track whether the current point in the track became bigger than the point when the next figure should be highlighted, and highlights it if that is the case.
 	if time > (_elapsed_time_until_last_figure + (_current_figure.duration_time)):
 		_elapsed_beats_until_last_figure += _current_figure.duration
-		# Turns page automatically. FIND WAY TO CALCULATE HOW MANY BEATS ARE IN A PAGE TO INPUT HERE
-		if int(_elapsed_beats_until_last_figure) % 16 == 0:
-			eop_reached.emit()
+
 		_elapsed_time_until_last_figure += _current_figure.duration_time
 		
 		_current_figure = _highlighter.highlight_next()
+
+
+func update_audio(audio: AudioStreamMP3) -> void:
+	audio_stream_player.stream = audio
 
 
 ## Enters playback mode. Highlights each figure in the argument rhythms_list (a reference to all figures placed in the editor) according to the beat.

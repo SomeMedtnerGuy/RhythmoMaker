@@ -18,8 +18,9 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 
 func _ready() -> void:
-	for button in get_children():
-		button.typed_pressed.connect(_on_typed_button_typed_pressed)
+	if not Engine.is_editor_hint():
+		for button in get_children():
+			button.typed_pressed.connect(_on_typed_button_typed_pressed)
 
 
 func _on_typed_button_typed_pressed(button_type) -> void:

@@ -11,8 +11,6 @@ func _ready() -> void:
 	MenuManager.change_to_menu($MainButton)
 
 
-
-
 ## Forwards the signal of the visibility of the MainMenuButton, effectively telling if the Main Menu is open or not. When it is open, the button disappears, so is_being_used = !button.visible
 func _on_main_visibility_changed() -> void:
 	menu_open_changed.emit(not get_node("MainButton").visible)

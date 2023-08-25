@@ -1,0 +1,60 @@
+[gd_scene load_steps=4 format=3 uid="uid://b051m2sijexrn"]
+
+[ext_resource type="PackedScene" uid="uid://yx0e6j2h537r" path="res://BaseObjects/base_menu.tscn" id="1_158yc"]
+[ext_resource type="Script" path="res://UIMenus/MainMenu/Settings/General/load_audio.gd" id="2_7abui"]
+[ext_resource type="PackedScene" uid="uid://d166ixo2ko56k" path="res://BaseObjects/settings_edit_field_base.tscn" id="2_glfmc"]
+
+[node name="LoadAudio" instance=ExtResource("1_158yc")]
+script = ExtResource("2_7abui")
+
+[node name="TitleLabel" parent="MarginContainer/VBoxContainer" index="0"]
+text = "Importar Áudio"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" index="0"]
+layout_mode = 2
+theme_override_constants/separation = 19
+
+[node name="AudioPath" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/VBoxContainer" index="0" instance=ExtResource("2_glfmc")]
+layout_mode = 2
+
+[node name="Label" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/VBoxContainer/AudioPath" index="0"]
+text = "Endereço do ficheiro: "
+
+[node name="LineEdit" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/VBoxContainer/AudioPath" index="1"]
+custom_minimum_size = Vector2(200, 0)
+text = ""
+placeholder_text = "escolher..."
+editable = false
+
+[node name="Search" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/VBoxContainer" index="1"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "Procurar"
+
+[node name="Return" type="Button" parent="MarginContainer/VBoxContainer/OtherButtonsContainer" index="0" groups=["return_button"]]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Voltar"
+
+[node name="Import" type="Button" parent="MarginContainer/VBoxContainer/OtherButtonsContainer" index="1"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "Importar"
+
+[node name="FileDialog" type="FileDialog" parent="." index="2"]
+title = "Escolher Ficheiro"
+initial_position = 2
+size = Vector2i(512, 400)
+ok_button_text = "Open"
+cancel_button_text = "Cancelar"
+mode_overrides_title = false
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.mp3 ; mp3 Files")
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/VBoxContainer/Search" to="." method="_on_search_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/OtherButtonsContainer/Import" to="." method="_on_import_pressed"]
+[connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_file_selected"]
+
+[editable path="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/VBoxContainer/AudioPath"]

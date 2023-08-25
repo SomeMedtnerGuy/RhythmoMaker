@@ -35,4 +35,9 @@ func _on_figure_pressed(duration: float):
 	# A dot adds half the value of the figure to it, so a new duration is calculated depending on the _is_dotted flag
 	if _is_dotted:
 		duration += duration / 2
-	figure_chosen.emit(duration, _is_rest)
+	
+	var figure_specs := {
+		duration = duration,
+		is_rest = _is_rest
+	}
+	figure_chosen.emit(figure_specs)

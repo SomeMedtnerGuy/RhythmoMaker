@@ -3,7 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://yx0e6j2h537r" path="res://BaseObjects/base_menu.tscn" id="1_47j5e"]
 
 [node name="GeneralSettingsMenu" instance=ExtResource("1_47j5e")]
-script = null
 
 [node name="TitleLabel" parent="MarginContainer/VBoxContainer" index="0"]
 text = "Gerais"
@@ -15,6 +14,14 @@ text = "Acrescentar Compassos"
 [node name="RemoveMeasures" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" index="1" groups=["menu_button"]]
 layout_mode = 2
 text = "Remover Compassos"
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" index="2"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="LoadAudio" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" index="3" groups=["menu_button"]]
+layout_mode = 2
+text = "Carregar Áudio"
 
 [node name="Return" type="Button" parent="MarginContainer/VBoxContainer/OtherButtonsContainer" index="0" groups=["return_button"]]
 layout_mode = 2

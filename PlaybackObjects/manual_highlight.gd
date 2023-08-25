@@ -17,12 +17,15 @@ var _currently_highlighted: Figure
 var _previous_position := 0.0
 
 @onready var audio_stream_player := $AudioStreamPlayer
-#@onready var highlighter := $Highlighter
 
 
 ## Process should only run when play button is pressed, so it starts deactivated
 func _ready() -> void:
 	set_process(false)
+
+
+func load_data(specs: Dictionary) -> void:
+	audio_stream_player.stream = load(specs.audio)
 
 
 func setup(highlighter: Highlighter) -> void:
@@ -53,6 +56,10 @@ func _process(_delta) -> void:
 		_previous_position = playback_position
 		# finally, highlight the next figure
 		_currently_highlighted = _highlighter.highlight_next()
+
+
+func update_audio(audio: AudioStreamMP3) -> void:
+	audio_stream_player.stream = audio
 
 
 ## The next two functions start and stop the manual highlighting process.

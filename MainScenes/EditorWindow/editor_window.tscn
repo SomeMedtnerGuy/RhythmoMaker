@@ -30,22 +30,18 @@ Label/font_sizes/font_size = 20
 Label/fonts/font = ExtResource("6_2sixr")
 Label/styles/normal = SubResource("StyleBoxFlat_pyj1h")
 
-[node name="EditorWindow" type="Node"]
+[node name="EditorWindow" type="Node" groups=["loader"]]
 script = ExtResource("1_06pkd")
-number_of_measures = 7
 
 [node name="InactiveIndicator" type="CanvasModulate" parent="."]
-visible = false
-color = Color(1, 1, 1, 0.392157)
 
-[node name="Staff" type="Node2D" parent="."]
+[node name="Staff" type="Node2D" parent="." groups=["saver"]]
 script = ExtResource("2_tcf3h")
 
-[node name="ManualHighlight" parent="." instance=ExtResource("3_0ymek")]
+[node name="ManualHighlight" parent="." groups=["loader"] instance=ExtResource("3_0ymek")]
 
-[node name="Synchronizer" parent="." instance=ExtResource("4_67bc7")]
-_track_bpm = 50
-initial_delay = 0.53
+[node name="Synchronizer" parent="." groups=["loader", "saver"] instance=ExtResource("4_67bc7")]
+_track_bpm = 200
 
 [node name="UiContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
@@ -159,7 +155,6 @@ script = ExtResource("14_3t1b5")
 [connection signal="delay_set" from="ManualHighlight" to="." method="set_delay"]
 [connection signal="finished" from="ManualHighlight" to="." method="stop_manual_highlight"]
 [connection signal="pageturn_requested" from="ManualHighlight" to="." method="_on_pageturn_requested"]
-[connection signal="eop_reached" from="Synchronizer" to="." method="_on_synchronizer_eop_reached"]
 [connection signal="pageturn_requested" from="Synchronizer" to="." method="_on_pageturn_requested"]
 [connection signal="playback_finished" from="Synchronizer" to="." method="stop_playback"]
 [connection signal="enabled_disabled" from="UiContainer/UI/ManualHighlightUI" to="." method="_on_manual_highlight_enabled_disabled"]

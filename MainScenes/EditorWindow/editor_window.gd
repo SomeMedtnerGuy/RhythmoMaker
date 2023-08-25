@@ -4,12 +4,26 @@ extends Node
 # Options for highlighting mode (explained below)
 enum HIGHLIGHT_MODE {AUTOMATIC, MANUAL}
 
+const MODULATE_COLOR_ACTIVE := Color(1,1,1,1)
+const MODULATE_COLOR_INACTIVE := Color(1,1,1,0.34)
+
 const HIGHLIGHTER_SCENE := preload("res://highlighter.gd")
-# The path to the measure_page scene. There will be an arbitrary number of them, depending on how many measures the piece has
-const MEASURES_PAGE_SCENE := preload("res://Measure/measures_page.tscn")
-const MEASURES_PER_PAGE := 4
+
+
 const NEUTRAL_COLOR := Color.WHITE
 const HIGHLIGHT_COLOR := Color.LIGHT_YELLOW
+
+
+var active := true:
+	set(value):
+		active = value
+		if active:
+			inactive_indicator.color = MODULATE_COLOR_ACTIVE
+			process_mode = Node.PROCESS_MODE_INHERIT
+		else:
+			inactive_indicator.color = MODULATE_COLOR_INACTIVE
+			process_mode = Node.PROCESS_MODE_DISABLED
+
 
 # Automatic: Length of figures is calculated automatically from BPM value. Easy to use and extremely precise, but cannot take into account variations of tempo during the track. Ideal for computer-produced music and music performed at metronomic speed.
 # Manual: Length of figures is manually set by user. Requires user to perform along the music once, so synchronizer can know how long exactly each figure is. Needs manual setting, but highly customizable. Ideal for music that slows down or speeds up during performance. 
@@ -20,10 +34,6 @@ const HIGHLIGHT_COLOR := Color.LIGHT_YELLOW
 		if value == HIGHLIGHT_MODE.MANUAL:
 			for figure in staff.get_figures():
 				figure.duration_time = 0.0
-
-## Value set by user in case music doesn't start right when audiofile does.
-@export var initial_delay := 0.0
-@export var number_of_measures := 4
 
 
 ## Number of pages present in staff. This number will depend on how many measures the user inputs. Used to avoid the page-turning to turn more pages than it should.
@@ -49,14 +59,12 @@ var current_page_index: int :
 		page_number_label.text = "Página: %d" % (value + 1)
 
 
-## Holds measure currently being highlighted
-var highlighted_measure: Measure
-
-
 @onready var inactive_indicator := $InactiveIndicator
 @onready var staff := $Staff
 @onready var page_number_label := $UiContainer/UI/PageNumberLabel
 @onready var editor_tools := $UiContainer/UI/Tools
+@onready var editors_menu := $UiContainer/UI/Tools/EditorsMenu
+@onready var erase_button := $UiContainer/UI/Tools/EraseButton
 @onready var play_stop_manual_button := $UiContainer/UI/ManualHighlightUI/HBoxContainer/StartManualHighlight
 @onready var playback_button := $UiContainer/UI/PlaybackButton
 @onready var manual_highlight_ui := $UiContainer/UI/ManualHighlightUI
@@ -67,38 +75,27 @@ var highlighted_measure: Measure
 
 func _ready() -> void:
 	EventBus.change_measures_submitted.connect(_on_change_measures_submitted)
+	EventBus.audio_chosen.connect(_on_audio_chosen)
+	erase_button.mouse_entered.connect(editors_menu._on_hover_over_trash.bind(true))
+	erase_button.mouse_exited.connect(editors_menu._on_hover_over_trash.bind(false))
+
+
+func load_data(specs: Dictionary) -> void:
+	setup(specs)
+	var measures: Array = specs.measures
+	var measures_list: Array = staff.get_measures()
+	for i in len(measures_list):
+		measures_list[i].barline_type = measures[i].barline_type
+		measures_list[i].load_figures(measures[i].figures)
+
 
 ## Sets all initial params for edition.
 func setup(specs: Dictionary) -> void:
-	# Creates and sets up the number of pages necessary until all measures are aaccounted for. It should fill the pages with max amount of measures until the last page, which should only include the number of measures left
-	var measures_left = specs.measures_amount
-	# While there are still measures to place...
-	while measures_left != 0:
-		# The function that create_measure_page() calls to add the measures, MeasurePage.add_measures() returns the number of measures remaining after the page is filled (4 less or 0, but it is flexible in case number of measures possible to fit in one page changes)
-		measures_left = create_measure_page(measures_left)
 	
-	for measure in staff.get_measures():
-		measure.beats_amount = specs.beats_per_measure
-		measure.barline_type = Types.BARLINES.SINGLE
-	
+	staff.setup(specs.measures_amount, specs.beats_per_measure)
 	# Sets the variables having to do with page handeling
 	update_page_values()
-	
 	setup_players()
-
-
-func create_measure_page(amount: int) -> int:
-	var measure_page: MeasuresPage = MEASURES_PAGE_SCENE.instantiate()
-	#Pages are invisible by default. Their visibility is controlled by current_page
-	measure_page.visible = false
-	staff.add_child(measure_page)
-	
-	amount = measure_page.add_measures(amount)
-	
-	for measure in measure_page.get_children():
-		measure.selected_changed.connect(_on_measure_selected_changed)
-	
-	return amount
 
 
 func update_page_values() -> void:
@@ -117,8 +114,8 @@ func setup_players() -> void:
 ## Does the necessary work before something can play (Synchronizer or Manual Highlight)
 func setup_to_play_whatever(whatevers_ui: Node) -> void:
 	# Deselect any measure that might be highlighted
-	if highlighted_measure:
-		highlighted_measure.highlighted = false
+	if staff.highlighted_measure:
+		staff.highlighted_measure.highlighted = false
 	# Makes the measures unable to be selected
 	staff.toggle_measures_input(false)
 	# Hide all UI except the relevant stop button
@@ -212,35 +209,22 @@ func _on_next_page_button_pressed():
 
 
 ## When a figure is chosen in the editor tool, the editor sends it to the measure currently highlighted for placement
-func _on_figure_buttons_container_figure_chosen(duration: float, is_rest: bool) -> void:
+func _on_figure_buttons_container_figure_chosen(figure_specs: Dictionary) -> void:
 	# Only place the figure if there is a measure selected
-	if highlighted_measure:
-		highlighted_measure.place_figure(duration, is_rest)
+	if staff.highlighted_measure:
+		staff.highlighted_measure.place_figure(figure_specs)
 
 
 func _on_tools_menu_barline_chosen(barline) -> void:
-	if highlighted_measure:
-		highlighted_measure.barline_type = barline
+	if staff.highlighted_measure:
+		staff.highlighted_measure.barline_type = barline
 
 
 func _on_erase_button_pressed():
-	if highlighted_measure:
+	if staff.highlighted_measure:
 		# Currently, delete button deletes last figure of the selected measure.
-		highlighted_measure.delete_last_figure()
-	
+		staff.highlighted_measure.delete_last_figure()
 
-
-## Each measure is connected to this function
-func _on_measure_selected_changed(is_selected: bool, measure: Measure):
-	# is_selected tells the function whether the measure became selected or not (it becomes deselected if it is clicked when it is already selected
-	if is_selected:
-		# If there is already a measure selected, deselect it first
-		if highlighted_measure:
-			highlighted_measure.highlighted = false
-		highlighted_measure = measure
-	# In case it became deselected, just update the variable. Everything else is taken care of by the measure itself
-	else:
-		highlighted_measure = null
 
 
 ## Turns page when requested by some player (via request of the highlighter, which is the one who checks if the note highlighted is the last of the page or not).
@@ -250,14 +234,10 @@ func _on_pageturn_requested():
 
 ## Callback of the signal emitted by the add/remove measures
 func _on_change_measures_submitted(amount: int, add: bool) -> void:
-	highlighted_measure = null
+	staff.highlighted_measure = null
 	# "Add" logic
 	if add:
-		# Adds remaining measures until last page fills,
-		amount = staff.get_pages()[-1].add_measures(amount)
-		# then continue adding measures, creating pages as needed
-		while amount != 0:
-			amount = create_measure_page(amount)
+		staff.add_measures(amount)
 	# "Remove" logic
 	else:
 		var measures: Array = staff.get_measures()
@@ -286,6 +266,11 @@ func _on_change_measures_submitted(amount: int, add: bool) -> void:
 	# Close the MainMenu after done
 	MenuManager.return_to_first()
 
+
+func _on_audio_chosen(audio: AudioStreamMP3) -> void:
+	manual_highlight.update_audio(audio)
+	synchronizer.update_audio(audio)
+	MenuManager.return_to_first()
 
 ## Sets initial delay. Can either be done manually in the beginning (TO BE IMPLEMENTED) or set by ManualHighlight based on how long the user takes to start pressing.
 func set_delay(delay):

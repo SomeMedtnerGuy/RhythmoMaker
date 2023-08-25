@@ -7,6 +7,7 @@ signal selection_toggled(was_selected)
 const DEFAULT_COLOR := Color(1, 1, 1, 1)
 const SELECT_COLOR := Color(1, 1, 0.57, 0.35)
 
+var texture_path: String
 
 var _hovered := false
 ## Holds whether the object is selected or not. Changes the visual representation and emits the signal in case other classes need to react to it.

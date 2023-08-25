@@ -47,7 +47,7 @@ region = Rect2(0, 0, 64, 64)
 atlas = ExtResource("7_tps5j")
 region = Rect2(0, 64, 64, 64)
 
-[node name="EditorsMenu" type="PanelContainer"]
+[node name="EditorsMenu" type="PanelContainer" groups=["loader", "saver"]]
 self_modulate = Color(1, 1, 1, 0)
 anchors_preset = 10
 anchor_right = 1.0
@@ -125,6 +125,8 @@ layout_mode = 2
 [node name="SectionsEditor" parent="ActiveEditor/PanelContainer" instance=ExtResource("12_1oqga")]
 visible = false
 layout_mode = 2
+
+[node name="Markers" type="Node2D" parent="."]
 
 [connection signal="pressed" from="EditorOptionsContainer/FiguresEditorButton" to="." method="_on_editor_option_pressed" binds= [1]]
 [connection signal="pressed" from="EditorOptionsContainer/BarlinesEditorButton" to="." method="_on_editor_option_pressed" binds= [2]]

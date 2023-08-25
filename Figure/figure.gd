@@ -45,6 +45,16 @@ var sprite_width := 128.0:
 		sprite_width = clamp(value, MIN_WIDTH, MAX_WIDTH)
 
 
+func save_data() -> Dictionary:
+	var save_dict := {
+		"duration": duration,
+		"is_rest": is_rest,
+		"duration_time": duration_time,
+	}
+	
+	return save_dict
+
+
 func setup(params) -> void:
 	duration = params.duration
 	is_rest = params.is_rest
@@ -54,6 +64,8 @@ func setup(params) -> void:
 		DURATION_TO_REGION_X[duration], IS_REST_TO_REGION_Y[is_rest], 
 		sprite_width, RECT_SIZE_Y
 	)
+	if params.has("duration_time"):
+		duration_time = params.duration_time
 
 
 ## OPTIONS: "next", "previous", "both"
