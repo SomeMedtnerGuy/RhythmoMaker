@@ -37,7 +37,9 @@ var duration := 1.0
 var duration_time: float
 
 var is_rest := false
-var is_last_of_page := false
+var page_i := 0
+var is_first_of_rep := false
+var is_last_of_rep := false
 
 ## How wide the sprite is. Allows connections to neighbors no matter their distance to oneanother
 var sprite_width := 128.0:
@@ -59,6 +61,7 @@ func setup(params) -> void:
 	duration = params.duration
 	is_rest = params.is_rest
 	sprite_width = params.sprite_width
+	page_i = params.page_i
 	# Draws from spritesheet aaccording to duration, is_rest flag and the sprite width
 	region_rect = Rect2(
 		DURATION_TO_REGION_X[duration], IS_REST_TO_REGION_Y[is_rest], 

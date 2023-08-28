@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://titv1f3arlgm"]
+[gd_scene load_steps=3 format=3 uid="uid://titv1f3arlgm"]
 
 [ext_resource type="Script" path="res://PlaybackObjects/synchronizer.gd" id="1_ov58p"]
+[ext_resource type="AudioStream" uid="uid://dshtvw3isohsf" path="res://AssetsAndResources/14-14 Faixa de Ã¡udio.mp3" id="2_minw6"]
 
 [node name="Synchronizer" type="Node"]
 script = ExtResource("1_ov58p")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_minw6")

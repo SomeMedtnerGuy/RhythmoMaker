@@ -1,12 +1,24 @@
 ## Object that holds the score. Offers methods to provide info about it, or change its state
 class_name Staff
-extends Node2D
+extends Marker2D
 
 
 # The path to the measure_page scene. There will be an arbitrary number of them, depending on how many measures the piece has
 const MEASURE_SCENE := preload("res://Measure/measure.tscn")
 const MEASURES_PAGE_SCENE := preload("res://Measure/measures_page.tscn")
 const MEASURES_PER_PAGE := 4
+
+
+## Holds the page currently displayed on screen. Setter handles the page-turning (aka what page is visible or not.
+var current_page: MeasuresPage :
+	set(page):
+		# The previous current page should become invisible
+		if current_page:
+			current_page.visible = false
+		current_page = page
+		marker_tracker.current_page = current_page
+		page.visible = true
+
 
 ## Holds measure currently being highlighted
 var highlighted_measure: Measure:
@@ -23,8 +35,10 @@ var highlighted_measure: Measure:
 		if highlighted_measure:
 			highlighted_measure.highlighted = true
 
-
 var _beats_per_measure: float = 0.0
+
+@onready var pages: Node2D = $Pages
+@onready var marker_tracker: Node2D = $MarkerTracker
 
 
 func save_data() -> Dictionary:
@@ -39,6 +53,7 @@ func save_data() -> Dictionary:
 	return data
 
 
+
 func setup(measures_amount: int, beats_per_measure: int) -> void:
 	_beats_per_measure = beats_per_measure
 	add_measures(measures_amount)
@@ -48,7 +63,7 @@ func add_measures(amount: int, barline_type: Types.BARLINES = Types.BARLINES.SIN
 	for measure_no in amount:
 		var measure := MEASURE_SCENE.instantiate()
 		measure.beats_amount = _beats_per_measure
-		if not get_pages() or get_pages()[-1].get_child_count() == 4:
+		if not get_pages() or len(get_measures()) % 4 == 0:
 			create_measure_page()
 		var last_page = get_pages()[-1]
 		last_page.place_measure(measure)
@@ -61,20 +76,20 @@ func create_measure_page() -> void:
 	var measure_page: MeasuresPage = MEASURES_PAGE_SCENE.instantiate()
 	#Pages are invisible by default. Their visibility is controlled by current_page
 	measure_page.visible = false
-	add_child(measure_page)
+	pages.add_child(measure_page)
 
 
 ## Returns a list of page objects
 func get_pages() -> Array:
-	return get_children()
+	return pages.get_children()
 
 
 ## Returns a list of all measures
 func get_measures() -> Array:
 	var output := []
 	
-	for page in get_children():
-		for measure in page.get_children():
+	for page in get_pages():
+		for measure in page.measures.get_children():
 			output.push_back(measure)
 	return output
 

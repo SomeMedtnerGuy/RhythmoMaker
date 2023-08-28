@@ -2,7 +2,7 @@
 class_name Selectable
 extends Area2D
 
-signal selection_toggled(was_selected)
+signal selection_toggled(marker, was_selected)
 
 const DEFAULT_COLOR := Color(1, 1, 1, 1)
 const SELECT_COLOR := Color(1, 1, 0.57, 0.35)

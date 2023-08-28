@@ -5,6 +5,7 @@ extends PanelContainer
 ## Signals for when options that need to be handled by a different class are chosen:
 signal figure_chosen(figure_specs: Dictionary)
 signal barline_chosen(barline: Types.BARLINES)
+signal marker_chosen(marker: Selectable)
 
 ## Color the editor_button should take when chosen and its editor is active
 const DEFAULT_MODULATE := Color(1.0, 1.0, 1.0)
@@ -16,9 +17,6 @@ const SELECTABLE_SCENE := preload("res://BaseObjects/selectable.tscn")
 ## Types of editors
 enum EDITOR { NONE, FIGURES, BARLINES, DYNAMICS, ORFF, SECTIONS }
 
-## Variable that holds the currently draggable object
-var _draggable: Selectable
-var trash_hovered := false
 
 ## Dictionaries that connect the different marker options to their respective sprites
 var dynamics_markers := {
@@ -97,35 +95,6 @@ var active_editor := EDITOR.NONE
 		editor = $ActiveEditor/PanelContainer/SectionsEditor,
 	},
 }
-
-
-## The process function only serves to update the position of an active draggable
-func _process(_delta: float) -> void:
-	if _draggable:
-		_draggable.position = get_global_mouse_position()
-
-
-func save_data() -> Dictionary:
-	var markers_list := []
-	for marker in markers.get_children():
-		markers_list.append(
-			{
-				"pos_x": marker.global_position.x,
-				"pos_y": marker.global_position.y,
-				"texture_path": marker.texture_path
-			}
-		)
-	
-	return {"markers": markers_list}
-
-
-func load_data(specs: Dictionary) -> void:
-	for marker in specs.markers:
-		create_draggable(marker.texture_path)
-		_draggable.global_position = Vector2(marker.pos_x, marker.pos_y)
-		
-		_draggable.selected = false
-		_draggable = null
 
 
 ## All editor buttons are connected to this function. It opens the chosen editor (makes it visible.
@@ -259,38 +228,21 @@ func _on_barlines_editor_barline_chosen(barline: Types.BARLINES) -> void:
 	barline_chosen.emit(barline)
 
 
-## All other editors create draggables upon choice made, so they are connected here instead. 
-func _on_editor_draggable_chosen(option) -> void:
+## All other editors create markers upon choice made, so they are connected here instead. 
+func _on_editor_marker_chosen(option) -> void:
 	var markers_dict: Dictionary = type_to_markers[active_editor]
-	var draggable_texture_path: String = markers_dict[option]
-	create_draggable(draggable_texture_path)
+	var marker_texture_path: String = markers_dict[option]
+	var marker: Selectable = create_marker(marker_texture_path)
+	marker_chosen.emit(marker)
 
-## A draggable is an object that, when selected, moves along with the mouse.
-func create_draggable(texture_path: String) -> void:
-	# If this variable is not null, it means there is already an object being dragged. Only one at a time is allowed, so nothing happens if that is the case.
-	if _draggable:
-		return
-	
-	_draggable = SELECTABLE_SCENE.instantiate()
-	markers.add_child(_draggable)
-	# "markers" links an enum value to a texture resource. That enum value represents the marker chosen to be created. Therefore, the texture that it is linked to should be the texture of the sprite of the draggable object.
-	_draggable.sprite.texture = load(texture_path)
-	_draggable.texture_path = texture_path
-	# This allows for the marker to always be shown above everything else (except markers created afterwards, which also run this method)
-	_draggable.set_as_top_level(true)
-	_draggable.selection_toggled.connect(_on_draggable_selection_toggled)
+## A marker is an object that, when selected, moves along with the mouse.
+func create_marker(texture_path: String) -> Selectable:
+	var marker = SELECTABLE_SCENE.instantiate()
+	# "markers" links an enum value to a texture resource. That enum value represents the marker chosen to be created. Therefore, the texture that it is linked to should be the texture of the sprite of the marker object.
+	marker.get_node("Sprite2D").texture = load(texture_path)
+	marker.texture_path = texture_path
+	return marker
 
 
-## The custom signal that this function is connected to sends a reference to itself, so this class knows what to drag.
-func _on_draggable_selection_toggled(draggable, was_selected) -> void:
-	# As a reminder, everytime _draggable has a reference to an object, the _process() function takes care of keeping it close to the mouse.
-	if was_selected:
-		_draggable = draggable
-	else:
-		if trash_hovered:
-			_draggable.queue_free()
-		_draggable = null
 
 
-func _on_hover_over_trash(is_hovered: bool) -> void:
-	trash_hovered = is_hovered

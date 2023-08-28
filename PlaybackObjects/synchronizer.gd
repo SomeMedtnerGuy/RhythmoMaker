@@ -112,5 +112,5 @@ func _on_highlighter_end_of_figures_reached():
 	playback_finished.emit()
 
 
-func _on_highlighter_pageturn_requested():
-	pageturn_requested.emit()
+func _on_highlighter_pageturn_requested(page: int):
+	pageturn_requested.emit(page)

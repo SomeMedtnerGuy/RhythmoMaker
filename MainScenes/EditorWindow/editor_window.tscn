@@ -1,8 +1,9 @@
-[gd_scene load_steps=17 format=3 uid="uid://bpgyt2q4qebqt"]
+[gd_scene load_steps=18 format=3 uid="uid://bpgyt2q4qebqt"]
 
 [ext_resource type="Script" path="res://MainScenes/EditorWindow/editor_window.gd" id="1_06pkd"]
 [ext_resource type="Script" path="res://Measure/staff.gd" id="2_tcf3h"]
 [ext_resource type="PackedScene" uid="uid://b1r7uottypc3k" path="res://PlaybackObjects/manual_highlight.tscn" id="3_0ymek"]
+[ext_resource type="Script" path="res://marker_tracker.gd" id="3_mgall"]
 [ext_resource type="PackedScene" uid="uid://titv1f3arlgm" path="res://PlaybackObjects/synchronizer.tscn" id="4_67bc7"]
 [ext_resource type="PackedScene" uid="uid://ddve6ma1p2w14" path="res://PlaybackObjects/manual_highlight_ui.tscn" id="5_hwvl5"]
 [ext_resource type="FontFile" uid="uid://dcprkn2psj6lk" path="res://AssetsAndResources/PublicPixel-z84yD.ttf" id="6_2sixr"]
@@ -32,16 +33,23 @@ Label/styles/normal = SubResource("StyleBoxFlat_pyj1h")
 
 [node name="EditorWindow" type="Node" groups=["loader"]]
 script = ExtResource("1_06pkd")
+metadata/_edit_vertical_guides_ = [640.0]
+metadata/_edit_horizontal_guides_ = [360.0]
 
 [node name="InactiveIndicator" type="CanvasModulate" parent="."]
 
-[node name="Staff" type="Node2D" parent="." groups=["saver"]]
+[node name="Staff" type="Marker2D" parent="." groups=["saver"]]
+position = Vector2(640, 384)
 script = ExtResource("2_tcf3h")
+
+[node name="MarkerTracker" type="Node2D" parent="Staff"]
+script = ExtResource("3_mgall")
+
+[node name="Pages" type="Node2D" parent="Staff"]
 
 [node name="ManualHighlight" parent="." groups=["loader"] instance=ExtResource("3_0ymek")]
 
 [node name="Synchronizer" parent="." groups=["loader", "saver"] instance=ExtResource("4_67bc7")]
-_track_bpm = 200
 
 [node name="UiContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
@@ -162,6 +170,7 @@ script = ExtResource("14_3t1b5")
 [connection signal="stop_pressed" from="UiContainer/UI/ManualHighlightUI" to="." method="stop_manual_highlight"]
 [connection signal="barline_chosen" from="UiContainer/UI/Tools/EditorsMenu" to="." method="_on_tools_menu_barline_chosen"]
 [connection signal="figure_chosen" from="UiContainer/UI/Tools/EditorsMenu" to="." method="_on_figure_buttons_container_figure_chosen"]
+[connection signal="marker_chosen" from="UiContainer/UI/Tools/EditorsMenu" to="." method="_on_editors_menu_marker_chosen"]
 [connection signal="pressed" from="UiContainer/UI/Tools/PreviousPageButton" to="." method="_on_previous_page_button_pressed"]
 [connection signal="pressed" from="UiContainer/UI/Tools/NextPageButton" to="." method="_on_next_page_button_pressed"]
 [connection signal="pressed" from="UiContainer/UI/Tools/EraseButton" to="." method="_on_erase_button_pressed"]

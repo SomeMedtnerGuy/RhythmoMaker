@@ -33,7 +33,9 @@ var barline_type := Types.BARLINES.SINGLE:
 	set(value):
 		barline_type = value
 		if barline:
-			barline.region_rect = Rect2(BARLINES_REGION[value], Vector2(40, 190))
+			barline.region_rect = Rect2(BARLINES_REGION[value], Vector2(40, 140))
+
+var is_last_of_page := false
 
 
 ## Used to place the figures proportionally to the length of the measure
@@ -45,25 +47,25 @@ var barline_type := Types.BARLINES.SINGLE:
 @onready var measure_length: float = $Path2D.curve.get_baked_length()
 
 
-func save_data() -> Dictionary:
-	var figures_list := []
-	for figure in figures.get_children():
-		figures_list.append(figure.save_data())
-	var save_dict := {
-		"barline_type": barline_type,
-		"figures": figures_list
-	}
-	return save_dict
-
-
-func load_figures(figures_list: Array) -> void:
-	for figure_specs in figures_list:
-		place_figure(figure_specs)
+#func save_data() -> Dictionary:
+#	var figures_list := []
+#	for figure in figures.get_children():
+#		figures_list.append(figure.save_data())
+#	var save_dict := {
+#		"barline_type": barline_type,
+#		"figures": figures_list
+#	}
+#	return save_dict
+#
+#
+#func load_figures(figures_list: Array) -> void:
+#	for figure_specs in figures_list:
+#		place_figure(figure_specs)
 
 
 
 ## Places a rhythmic figure with duration "duration" in the measure
-func place_figure(figure_specs: Dictionary) -> void:
+func place_figure(figure_specs: Dictionary, current_page_i: int) -> void:
 	var duration: float = figure_specs.duration
 	var is_rest: bool = figure_specs.is_rest
 	
@@ -85,13 +87,15 @@ func place_figure(figure_specs: Dictionary) -> void:
 	var duration_percentage := duration / beats_amount
 	# Calculates how long the beams should be, based on how long the figure lasts (so it connects only to the next one). I cannot for the life of me understand why the fuck duration_percentage * measure_length by itself doesn't work (gives a much larger width, especially on the dotted eighth), so a cut, also proportional to the duration percentage, is made. It works, but it also itches.
 	var sprite_width := (duration_percentage * measure_length) - (duration_percentage * 65.0)
-	var params := {duration = duration, is_rest = is_rest, sprite_width = sprite_width}
+	var params := {duration = duration, is_rest = is_rest, sprite_width = sprite_width, page_i = current_page_i}
 	figure.setup(params)
 	figures.add_child(figure)
 	
 	# Places the figure according to how long it is compared to the length of the measure, having into account how many figures were already placed.
 	pathfollow2d.progress_ratio = current_duration / beats_amount
 	figure.position = pathfollow2d.position
+	if current_duration == 0 and barline_type == Types.BARLINES.STARTREP:
+		figure.is_first_of_rep = true
 	
 	# Recalculates current duration (with the new figure taken into account), so the next check works
 	current_duration = calculate_current_duration()
@@ -100,10 +104,8 @@ func place_figure(figure_specs: Dictionary) -> void:
 	if current_duration - int(current_duration) == 0.0:
 		make_connections()
 		
-		# If total current duration is the duration of the entire page, set the figure as being the last of it, so highlighter knows when to request a pageturn.
-		# This check is made inside the previous if-statement so <1.0 duration notes do not pass the check when converted to int (any notes placed right after the pageturn would pass it.)
-		if int(current_duration) == beats_amount * 4:
-			figure.is_last_of_page = true
+		if int(current_duration) == beats_amount and barline_type == Types.BARLINES.ENDREP:
+			figure.is_last_of_rep = true
 
 
 ## Groups beams that should be grouped. At some point it should be dynamic, but as the rules are surprisingly complex, right now it is done on a case by case basis.

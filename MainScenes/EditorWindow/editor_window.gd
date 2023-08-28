@@ -40,27 +40,22 @@ var active := true:
 var number_of_pages: int
 ## An array containing the pages themselves
 var pages_array: Array
-## Holds the page currently displayed on screen. Setter handles the page-turning (aka what page is visible or not.
-var current_page: MeasuresPage :
-	set(page):
-		# The previous current page should become invisible
-		if current_page:
-			current_page.visible = false
-		current_page = page
-		page.visible = true
+
 
 ## Holds the index of the current page, and the setter sends the correct page to the current_page variable 
 var current_page_index: int :
 	set(value):
 		# Avoids the page index to leave the outer bounds of the number of pages
 		current_page_index = clamp(value, 0, number_of_pages - 1)
-		current_page = pages_array[current_page_index]
+		staff.current_page = pages_array[current_page_index]
 		# Updates the label that shows the page number
 		page_number_label.text = "Página: %d" % (value + 1)
 
 
 @onready var inactive_indicator := $InactiveIndicator
-@onready var staff := $Staff
+@onready var staff: Staff = $Staff
+@onready var marker_tracker: MarkerTracker = $Staff/MarkerTracker
+@onready var pages: Node2D = $Staff/Pages
 @onready var page_number_label := $UiContainer/UI/PageNumberLabel
 @onready var editor_tools := $UiContainer/UI/Tools
 @onready var editors_menu := $UiContainer/UI/Tools/EditorsMenu
@@ -76,8 +71,8 @@ var current_page_index: int :
 func _ready() -> void:
 	EventBus.change_measures_submitted.connect(_on_change_measures_submitted)
 	EventBus.audio_chosen.connect(_on_audio_chosen)
-	erase_button.mouse_entered.connect(editors_menu._on_hover_over_trash.bind(true))
-	erase_button.mouse_exited.connect(editors_menu._on_hover_over_trash.bind(false))
+	erase_button.mouse_entered.connect(marker_tracker._on_hover_over_trash.bind(true))
+	erase_button.mouse_exited.connect(marker_tracker._on_hover_over_trash.bind(false))
 
 
 func load_data(specs: Dictionary) -> void:
@@ -112,7 +107,7 @@ func setup_players() -> void:
 
 
 ## Does the necessary work before something can play (Synchronizer or Manual Highlight)
-func setup_to_play_whatever(whatevers_ui: Node) -> void:
+func setup_to_play_whatever(whatevers_ui: Node) -> Array:
 	# Deselect any measure that might be highlighted
 	if staff.highlighted_measure:
 		staff.highlighted_measure.highlighted = false
@@ -121,8 +116,16 @@ func setup_to_play_whatever(whatevers_ui: Node) -> void:
 	# Hide all UI except the relevant stop button
 	whatevers_ui.remove_from_group("nodes_to_hide")
 	get_tree().call_group("nodes_to_hide", "hide")
+	
 	# Since playback starts from the beginning of the piece turn page to the beginning of the staff
 	current_page_index = 0
+	
+	staff.scale = Vector2(1.2, 1.2)
+	
+	var figures_list := []
+	figures_list = staff.get_figures()
+	return figures_list
+
 
 
 ## Reverts the work done by setup_to_play_whatever, called whenever what is playing stops
@@ -133,15 +136,14 @@ func setup_to_stop_whatever(whatevers_ui: Node) -> void:
 	get_tree().call_group("nodes_to_hide", "show")
 	# Allow relevant UI to be hidden if another node needs to hide it
 	whatevers_ui.add_to_group("nodes_to_hide")
+	
+	staff.scale = Vector2(1.0, 1.0)
 
 
 ## This function is responsible for collecting all the info input by the user so the Synchronizer can use it. It is called when the PlayStopButton is toggled on.
 func start_playback() -> void:
-	# Creates and fills in the array that the Synchronizer will be using to highlight the figures
-	var figures_list = []
-	
-	figures_list = staff.get_figures()
-	
+	#Prepares the playback (hide UI, turn to first page, etc)
+	var figures_list = setup_to_play_whatever(playback_button)
 	# Sets up the figures' duration_time depending on the highlight mode chosen by the user
 	# In case of automatic, it just has to convert each figure's duration into duration_time
 	if highlight_mode == HIGHLIGHT_MODE.AUTOMATIC:
@@ -156,8 +158,7 @@ func start_playback() -> void:
 				print("Not all figures are marked!")
 				return
 	
-	#Prepares the playback (hide UI, turn to first page, etc)
-	setup_to_play_whatever(playback_button)
+
 	
 	# Start Synchronizer
 	synchronizer.start_playback(figures_list)
@@ -173,8 +174,8 @@ func stop_playback() -> void:
 
 ## Starts ManualHighlight, allowing user to time the input so Synchronizer can reproduce it. Called when ManualHighlightUI's play button is pressed
 func start_manual_highlight():
-	setup_to_play_whatever(manual_highlight_ui)
-	manual_highlight.start(staff.get_figures())
+	var figures_list := setup_to_play_whatever(manual_highlight_ui)
+	manual_highlight.start(figures_list)
 
 
 ## Stops ManualHighlight. Called whenever the stop button is pressed, or when all figures's time durations are saved.
@@ -212,7 +213,7 @@ func _on_next_page_button_pressed():
 func _on_figure_buttons_container_figure_chosen(figure_specs: Dictionary) -> void:
 	# Only place the figure if there is a measure selected
 	if staff.highlighted_measure:
-		staff.highlighted_measure.place_figure(figure_specs)
+		staff.highlighted_measure.place_figure(figure_specs, current_page_index)
 
 
 func _on_tools_menu_barline_chosen(barline) -> void:
@@ -220,16 +221,15 @@ func _on_tools_menu_barline_chosen(barline) -> void:
 		staff.highlighted_measure.barline_type = barline
 
 
-func _on_erase_button_pressed():
+func _on_erase_button_pressed() -> void:
 	if staff.highlighted_measure:
 		# Currently, delete button deletes last figure of the selected measure.
 		staff.highlighted_measure.delete_last_figure()
 
 
-
 ## Turns page when requested by some player (via request of the highlighter, which is the one who checks if the note highlighted is the last of the page or not).
-func _on_pageturn_requested():
-	current_page_index += 1
+func _on_pageturn_requested(page_i: int) -> void:
+	current_page_index = page_i
 
 
 ## Callback of the signal emitted by the add/remove measures
@@ -276,3 +276,7 @@ func _on_audio_chosen(audio: AudioStreamMP3) -> void:
 func set_delay(delay):
 	synchronizer.initial_delay = delay
 
+
+
+func _on_editors_menu_marker_chosen(marker: Selectable) -> void:
+	marker_tracker.add_marker(marker)
