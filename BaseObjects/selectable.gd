@@ -2,13 +2,14 @@
 class_name Selectable
 extends Area2D
 
+## Emitted when user clicks on selectable. Sends reference to itself, so it can be attached by receiver to any object it wishes
 signal selection_toggled(marker, was_selected)
 
+## Modulate constants to distinguish between selected and not selected
 const DEFAULT_COLOR := Color(1, 1, 1, 1)
 const SELECT_COLOR := Color(1, 1, 0.57, 0.35)
 
-var texture_path: String
-
+## Keeps track whether the selectable is being hovered or not
 var _hovered := false
 ## Holds whether the object is selected or not. Changes the visual representation and emits the signal in case other classes need to react to it.
 var selected := true:
@@ -29,6 +30,7 @@ func _input(event: InputEvent) -> void:
 	if _hovered and event.is_action_pressed("left-click"):
 		# This method is what avoids event propagation
 		get_viewport().set_input_as_handled()
+		# Toggles selection
 		selected = not selected
 
 

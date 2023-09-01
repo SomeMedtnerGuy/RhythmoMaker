@@ -2,13 +2,13 @@ class_name ManualHighlight
 extends Node
 
 ## Bubbling up the request from highlighter to the editor, which is the object that controlls the visibility of the staff
-signal pageturn_requested
+signal pageturn_requested(page_i: int)
 ## Time from pressing start to the first key-stroke is sent to editor, which FOR NOW is the one sending this value to synchronizer
 signal delay_set(delay)
 ## Emitted when done. This happens when highlighter finishes all the figures in the list.
 signal finished()
 
-var _highlighter: Highlighter
+var _highlighter: Highlighter2
 ## Holds a value which is what I assume to be natural human delay when key-striking along with the audio (aka the time between when the beat occurs and when the key-stroke is detected). This value feels pretty good, but still subject to a little more experimentation and further testing to check if that is actually the reason.
 @export var _human_press_delay := 0.05
 
@@ -28,10 +28,10 @@ func load_data(specs: Dictionary) -> void:
 	audio_stream_player.stream = load(specs.audio)
 
 
-func setup(highlighter: Highlighter) -> void:
+func setup(highlighter: Highlighter2) -> void:
 	_highlighter = highlighter
-	_highlighter.end_of_figures_reached.connect(_on_highlighter_end_of_figures_reached)
-	_highlighter.pageturn_requested.connect(_on_highlighter_pageturn_requested)
+	_highlighter.finished.connect(_on_highlighter_finished)
+	_highlighter.page_changed.connect(_on_highlighter_page_changed)
 
 
 func _process(_delta) -> void:
@@ -76,9 +76,9 @@ func stop() -> void:
 
 
 ## Bubble-up callbacks
-func _on_highlighter_end_of_figures_reached():
+func _on_highlighter_finished():
 	finished.emit()
 
 
-func _on_highlighter_pageturn_requested():
-	pageturn_requested.emit()
+func _on_highlighter_page_changed(page_i: int):
+	pageturn_requested.emit(page_i)

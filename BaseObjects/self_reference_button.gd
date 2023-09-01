@@ -4,7 +4,7 @@ extends TextureButton
 
 signal typed_pressed(type: int)
 
-## Variable used to hold the Resource which holds the type of the button itself, which is used on its "typed_pressed" signal. ButtonCategory is an empty Resource class only to group all other inherited types that will have the sub-type as an exported variable. For example, "SectionOptions" inherits from ButtonCategory, and its exported variable holds which section the button actually references. The emmited signal has to get "button_category" (the particular SectionOptions resource) and use its "type" property to get the type of that specific button.
+## Variable used to hold the Resource which holds the type of the button itself, which is used on its "typed_pressed" signal. ButtonCategory is an empty Resource class only to group all other inherited types that will have the sub-type as an exported variable. For example, "SectionOptions" inherits from ButtonCategory, and its exported variable holds which section the button actually references. The emitted signal has to get "button_category" (the particular SectionOptions resource) and use its "type" property to get the type of that specific button.
 @export var button_category: ButtonCategory
 
 

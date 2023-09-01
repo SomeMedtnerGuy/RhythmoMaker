@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://ddve6ma1p2w14"]
 
 [ext_resource type="StyleBox" uid="uid://5qmoyx73d6qp" path="res://AssetsAndResources/PanelStylebox.tres" id="1_yo8nd"]
-[ext_resource type="Script" path="res://PlaybackObjects/manual_highlight_ui.gd" id="2_u0itt"]
+[ext_resource type="Script" path="res://PlaybackObjects/manual_duration_setting_ui.gd" id="2_0x873"]
 [ext_resource type="FontFile" uid="uid://dcprkn2psj6lk" path="res://AssetsAndResources/PublicPixel-z84yD.ttf" id="3_jqx7i"]
 [ext_resource type="Texture2D" uid="uid://eadxnb0lrul2" path="res://PlaybackObjects/PlayButton.png" id="4_klndu"]
 [ext_resource type="Texture2D" uid="uid://mqvrpsujuce8" path="res://PlaybackObjects/StopButtonPressed.png" id="5_eq8jw"]
@@ -12,7 +12,7 @@ offset_right = 328.0
 offset_bottom = 64.0
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("1_yo8nd")
-script = ExtResource("2_u0itt")
+script = ExtResource("2_0x873")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 0
@@ -30,7 +30,7 @@ text = "Seleção
 Manual:"
 alignment = 1
 
-[node name="StartManualHighlight" type="TextureButton" parent="HBoxContainer"]
+[node name="StartDurationsRecording" type="TextureButton" parent="HBoxContainer"]
 layout_mode = 2
 disabled = true
 toggle_mode = true
@@ -39,4 +39,4 @@ texture_pressed = ExtResource("5_eq8jw")
 texture_disabled = ExtResource("6_vj2sf")
 
 [connection signal="toggled" from="HBoxContainer/ManualHighlightButton" to="." method="_on_manual_highlight_button_toggled"]
-[connection signal="toggled" from="HBoxContainer/StartManualHighlight" to="." method="_on_start_manual_highlight_toggled"]
+[connection signal="toggled" from="HBoxContainer/StartDurationsRecording" to="." method="_on_start_manual_highlight_toggled"]

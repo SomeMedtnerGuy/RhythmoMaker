@@ -8,3 +8,15 @@ script = ExtResource("1_w5ju8")
 [node name="Measures" type="Node2D" parent="."]
 
 [node name="Markers" type="Node2D" parent="."]
+
+[node name="MeasurePos1" type="Marker2D" parent="."]
+position = Vector2(-456, -250)
+
+[node name="MeasurePos2" type="Marker2D" parent="."]
+position = Vector2(0, -250)
+
+[node name="MeasurePos3" type="Marker2D" parent="."]
+position = Vector2(-456, -20)
+
+[node name="MeasurePos4" type="Marker2D" parent="."]
+position = Vector2(0, -20)

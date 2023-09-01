@@ -47,14 +47,14 @@ var sprite_width := 128.0:
 		sprite_width = clamp(value, MIN_WIDTH, MAX_WIDTH)
 
 
-func save_data() -> Dictionary:
-	var save_dict := {
-		"duration": duration,
-		"is_rest": is_rest,
-		"duration_time": duration_time,
-	}
-	
-	return save_dict
+#func save_data() -> Dictionary:
+#	var save_dict := {
+#		"duration": duration,
+#		"is_rest": is_rest,
+#		"duration_time": duration_time,
+#	}
+#
+#	return save_dict
 
 
 func setup(params) -> void:

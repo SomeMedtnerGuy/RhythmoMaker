@@ -1,11 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://bpgyt2q4qebqt"]
+[gd_scene load_steps=17 format=3 uid="uid://bpgyt2q4qebqt"]
 
 [ext_resource type="Script" path="res://MainScenes/EditorWindow/editor_window.gd" id="1_06pkd"]
 [ext_resource type="Script" path="res://Measure/staff.gd" id="2_tcf3h"]
-[ext_resource type="PackedScene" uid="uid://b1r7uottypc3k" path="res://PlaybackObjects/manual_highlight.tscn" id="3_0ymek"]
 [ext_resource type="Script" path="res://marker_tracker.gd" id="3_mgall"]
-[ext_resource type="PackedScene" uid="uid://titv1f3arlgm" path="res://PlaybackObjects/synchronizer.tscn" id="4_67bc7"]
-[ext_resource type="PackedScene" uid="uid://ddve6ma1p2w14" path="res://PlaybackObjects/manual_highlight_ui.tscn" id="5_hwvl5"]
+[ext_resource type="Script" path="res://SyncHighlightSystem/synchronizer2.gd" id="4_nruvd"]
+[ext_resource type="PackedScene" uid="uid://ddve6ma1p2w14" path="res://PlaybackObjects/manual_duration_setting_ui.tscn" id="5_hwvl5"]
 [ext_resource type="FontFile" uid="uid://dcprkn2psj6lk" path="res://AssetsAndResources/PublicPixel-z84yD.ttf" id="6_2sixr"]
 [ext_resource type="PackedScene" uid="uid://cefxhem88bimp" path="res://EditorsMenu/editors_menu.tscn" id="7_p0lq7"]
 [ext_resource type="Texture2D" uid="uid://by14tfo0wmrko" path="res://MainScenes/EditorWindow/ArrowButton.png" id="8_rpwtp"]
@@ -47,9 +46,11 @@ script = ExtResource("3_mgall")
 
 [node name="Pages" type="Node2D" parent="Staff"]
 
-[node name="ManualHighlight" parent="." groups=["loader"] instance=ExtResource("3_0ymek")]
+[node name="Synchronizer2" type="Node" parent="."]
+script = ExtResource("4_nruvd")
+_track_bpm = 109
 
-[node name="Synchronizer" parent="." groups=["loader", "saver"] instance=ExtResource("4_67bc7")]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Synchronizer2"]
 
 [node name="UiContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
@@ -67,7 +68,7 @@ theme_override_constants/margin_bottom = 25
 layout_mode = 2
 mouse_filter = 2
 
-[node name="ManualHighlightUI" parent="UiContainer/UI" groups=["nodes_to_hide"] instance=ExtResource("5_hwvl5")]
+[node name="ManualDurationSettingUI" parent="UiContainer/UI" groups=["nodes_to_hide"] instance=ExtResource("5_hwvl5")]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -160,14 +161,11 @@ texture_normal = ExtResource("12_8v7ey")
 texture_pressed = ExtResource("13_pptx1")
 script = ExtResource("14_3t1b5")
 
-[connection signal="delay_set" from="ManualHighlight" to="." method="set_delay"]
-[connection signal="finished" from="ManualHighlight" to="." method="stop_manual_highlight"]
-[connection signal="pageturn_requested" from="ManualHighlight" to="." method="_on_pageturn_requested"]
-[connection signal="pageturn_requested" from="Synchronizer" to="." method="_on_pageturn_requested"]
-[connection signal="playback_finished" from="Synchronizer" to="." method="stop_playback"]
-[connection signal="enabled_disabled" from="UiContainer/UI/ManualHighlightUI" to="." method="_on_manual_highlight_enabled_disabled"]
-[connection signal="start_pressed" from="UiContainer/UI/ManualHighlightUI" to="." method="start_manual_highlight"]
-[connection signal="stop_pressed" from="UiContainer/UI/ManualHighlightUI" to="." method="stop_manual_highlight"]
+[connection signal="finished" from="Synchronizer2" to="." method="stop_synchronizer"]
+[connection signal="page_changed" from="Synchronizer2" to="." method="_on_page_changed"]
+[connection signal="enabled_disabled" from="UiContainer/UI/ManualDurationSettingUI" to="Synchronizer2" method="_on_manual_duration_setting_ui_enabled_disabled"]
+[connection signal="start_pressed" from="UiContainer/UI/ManualDurationSettingUI" to="." method="start_duration_recording"]
+[connection signal="stop_pressed" from="UiContainer/UI/ManualDurationSettingUI" to="." method="stop_synchronizer"]
 [connection signal="barline_chosen" from="UiContainer/UI/Tools/EditorsMenu" to="." method="_on_tools_menu_barline_chosen"]
 [connection signal="figure_chosen" from="UiContainer/UI/Tools/EditorsMenu" to="." method="_on_figure_buttons_container_figure_chosen"]
 [connection signal="marker_chosen" from="UiContainer/UI/Tools/EditorsMenu" to="." method="_on_editors_menu_marker_chosen"]
@@ -176,4 +174,4 @@ script = ExtResource("14_3t1b5")
 [connection signal="pressed" from="UiContainer/UI/Tools/EraseButton" to="." method="_on_erase_button_pressed"]
 [connection signal="toggled" from="UiContainer/UI/PlaybackButton" to="UiContainer/UI/PlaybackButton" method="_on_toggled"]
 [connection signal="toggled_down" from="UiContainer/UI/PlaybackButton" to="." method="start_playback"]
-[connection signal="toggled_up" from="UiContainer/UI/PlaybackButton" to="." method="stop_playback"]
+[connection signal="toggled_up" from="UiContainer/UI/PlaybackButton" to="." method="stop_synchronizer"]

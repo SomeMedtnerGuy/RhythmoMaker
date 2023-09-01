@@ -1,3 +1,5 @@
+@tool
+
 class_name Measure
 extends Area2D
 
@@ -11,7 +13,6 @@ const BARLINES_REGION := {
 	Types.BARLINES.DOUBLE: Vector2(40, 0),
 	Types.BARLINES.END: Vector2(80, 0),
 	Types.BARLINES.ENDREP: Vector2(120, 0),
-	Types.BARLINES.STARTREP: Vector2(160, 0)
 }
 
 ## The figure scene that is placed in each measure at the press of a figure_button
@@ -29,13 +30,21 @@ var highlighted := false:
 
 
 
-var barline_type := Types.BARLINES.SINGLE:
+@export var barline_type := Types.BARLINES.SINGLE:
 	set(value):
-		barline_type = value
 		if barline:
-			barline.region_rect = Rect2(BARLINES_REGION[value], Vector2(40, 140))
+			if value == Types.BARLINES.STARTREP:
+				is_start_repeat = not is_start_repeat
+				start_rep_barline.visible = not start_rep_barline.visible
+			else:
+				barline_type = value
+				if barline_type == Types.BARLINES.EMPTY:
+					barline.region_rect = Rect2(0,0,0,0)
+				else:
+					barline.region_rect = Rect2(BARLINES_REGION[value], Vector2(40, 140))
 
 var is_last_of_page := false
+var is_start_repeat := false
 
 
 ## Used to place the figures proportionally to the length of the measure
@@ -43,7 +52,7 @@ var is_last_of_page := false
 @onready var selection_rect := $SelectionRect
 @onready var figures = $Figures
 @onready var barline = $Barline
-
+@onready var start_rep_barline: Sprite2D = $StartRepBarline
 @onready var measure_length: float = $Path2D.curve.get_baked_length()
 
 
@@ -153,6 +162,9 @@ func delete_last_figure() -> void:
 	if figures.get_child_count() != 0:
 		figures.get_child(-1).queue_free()
 
+
+func get_figures() -> Array:
+	return figures.get_children()
 
 
 func _on_input_event(_v, event: InputEvent, _s):

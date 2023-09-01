@@ -1,11 +1,11 @@
 class_name MeasuresPage
 extends Node2D
 
-const MEASURE_POSITIONS := [
-	Vector2(-500, -250),
-	Vector2(25, -250),
-	Vector2(-500, -28),
-	Vector2(25, -28)
+@onready var MEASURE_POSITIONS := [
+	$MeasurePos1.position,
+	$MeasurePos2.position,
+	$MeasurePos3.position,
+	$MeasurePos4.position
 ]
 
 var current_marker: Selectable = null

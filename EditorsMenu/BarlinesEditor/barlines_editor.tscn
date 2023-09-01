@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://b0nbvvie4kie8"]
+[gd_scene load_steps=23 format=3 uid="uid://b0nbvvie4kie8"]
 
 [ext_resource type="Script" path="res://EditorsMenu/general_editor.gd" id="1_epdld"]
 [ext_resource type="Texture2D" uid="uid://wricyuwyc3nh" path="res://EditorsMenu/BarlinesEditor/BarlineButtons.png" id="2_c16s4"]
@@ -53,9 +53,29 @@ region = Rect2(192, 64, 64, 64)
 script = ExtResource("4_403g5")
 type = 3
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_nxpv2"]
+atlas = ExtResource("2_c16s4")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ebjxw"]
+atlas = ExtResource("2_c16s4")
+region = Rect2(256, 64, 64, 64)
+
 [sub_resource type="Resource" id="Resource_hb35u"]
 script = ExtResource("4_403g5")
 type = 4
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_31bx2"]
+atlas = ExtResource("2_c16s4")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8krhh"]
+atlas = ExtResource("2_c16s4")
+region = Rect2(320, 64, 64, 64)
+
+[sub_resource type="Resource" id="Resource_ivw3u"]
+script = ExtResource("4_403g5")
+type = 5
 
 [node name="BarlinesEditor" type="HBoxContainer"]
 anchors_preset = 10
@@ -95,5 +115,14 @@ button_category = SubResource("Resource_vi5d2")
 
 [node name="StartRep" type="TextureButton" parent="."]
 layout_mode = 2
+texture_normal = SubResource("AtlasTexture_nxpv2")
+texture_pressed = SubResource("AtlasTexture_ebjxw")
 script = ExtResource("3_nutdr")
 button_category = SubResource("Resource_hb35u")
+
+[node name="Empty" type="TextureButton" parent="."]
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_31bx2")
+texture_pressed = SubResource("AtlasTexture_8krhh")
+script = ExtResource("3_nutdr")
+button_category = SubResource("Resource_ivw3u")

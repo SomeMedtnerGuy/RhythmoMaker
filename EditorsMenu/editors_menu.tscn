@@ -126,8 +126,6 @@ layout_mode = 2
 visible = false
 layout_mode = 2
 
-[node name="Markers" type="Node2D" parent="."]
-
 [connection signal="pressed" from="EditorOptionsContainer/FiguresEditorButton" to="." method="_on_editor_option_pressed" binds= [1]]
 [connection signal="pressed" from="EditorOptionsContainer/BarlinesEditorButton" to="." method="_on_editor_option_pressed" binds= [2]]
 [connection signal="pressed" from="EditorOptionsContainer/DynamicsEditorButton" to="." method="_on_editor_option_pressed" binds= [3]]

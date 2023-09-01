@@ -2,13 +2,10 @@ class_name EditorWindow
 extends Node
 
 # Options for highlighting mode (explained below)
-enum HIGHLIGHT_MODE {AUTOMATIC, MANUAL}
+#enum HIGHLIGHT_MODE {AUTOMATIC, MANUAL}
 
 const MODULATE_COLOR_ACTIVE := Color(1,1,1,1)
 const MODULATE_COLOR_INACTIVE := Color(1,1,1,0.34)
-
-const HIGHLIGHTER_SCENE := preload("res://highlighter.gd")
-
 
 const NEUTRAL_COLOR := Color.WHITE
 const HIGHLIGHT_COLOR := Color.LIGHT_YELLOW
@@ -27,13 +24,13 @@ var active := true:
 
 # Automatic: Length of figures is calculated automatically from BPM value. Easy to use and extremely precise, but cannot take into account variations of tempo during the track. Ideal for computer-produced music and music performed at metronomic speed.
 # Manual: Length of figures is manually set by user. Requires user to perform along the music once, so synchronizer can know how long exactly each figure is. Needs manual setting, but highly customizable. Ideal for music that slows down or speeds up during performance. 
-@export var highlight_mode: HIGHLIGHT_MODE = HIGHLIGHT_MODE.AUTOMATIC :
-	set(value):
-		highlight_mode = value
-		# if manual mode is set, figures should not have time durations until user sets them. This setter resets that variable, which could contain values from previous actions (like pressing play in automatic mode, which calculates these values automatically).
-		if value == HIGHLIGHT_MODE.MANUAL:
-			for figure in staff.get_figures():
-				figure.duration_time = 0.0
+#@export var highlight_mode: HIGHLIGHT_MODE = HIGHLIGHT_MODE.AUTOMATIC :
+#	set(value):
+#		highlight_mode = value
+#		# if manual mode is set, figures should not have time durations until user sets them. This setter resets that variable, which could contain values from previous actions (like pressing play in automatic mode, which calculates these values automatically).
+#		if value == HIGHLIGHT_MODE.MANUAL:
+#			for figure in staff.get_figures():
+#				figure.duration_time = 0.0
 
 
 ## Number of pages present in staff. This number will depend on how many measures the user inputs. Used to avoid the page-turning to turn more pages than it should.
@@ -52,6 +49,9 @@ var current_page_index: int :
 		page_number_label.text = "Página: %d" % (value + 1)
 
 
+
+
+
 @onready var inactive_indicator := $InactiveIndicator
 @onready var staff: Staff = $Staff
 @onready var marker_tracker: MarkerTracker = $Staff/MarkerTracker
@@ -60,11 +60,10 @@ var current_page_index: int :
 @onready var editor_tools := $UiContainer/UI/Tools
 @onready var editors_menu := $UiContainer/UI/Tools/EditorsMenu
 @onready var erase_button := $UiContainer/UI/Tools/EraseButton
-@onready var play_stop_manual_button := $UiContainer/UI/ManualHighlightUI/HBoxContainer/StartManualHighlight
+@onready var play_stop_recording_button := $UiContainer/UI/ManualDurationSettingUI/HBoxContainer/StartDurationsRecording
 @onready var playback_button := $UiContainer/UI/PlaybackButton
-@onready var manual_highlight_ui := $UiContainer/UI/ManualHighlightUI
-@onready var manual_highlight := $ManualHighlight
-@onready var synchronizer := $Synchronizer
+@onready var manual_duration_setting_ui: Panel = $UiContainer/UI/ManualDurationSettingUI
+@onready var synchronizer_2: Synchronizer2 = $Synchronizer2
 
 
 
@@ -75,13 +74,13 @@ func _ready() -> void:
 	erase_button.mouse_exited.connect(marker_tracker._on_hover_over_trash.bind(false))
 
 
-func load_data(specs: Dictionary) -> void:
-	setup(specs)
-	var measures: Array = specs.measures
-	var measures_list: Array = staff.get_measures()
-	for i in len(measures_list):
-		measures_list[i].barline_type = measures[i].barline_type
-		measures_list[i].load_figures(measures[i].figures)
+#func load_data(specs: Dictionary) -> void:
+#	setup(specs)
+#	var measures: Array = specs.measures
+#	var measures_list: Array = staff.get_measures()
+#	for i in len(measures_list):
+#		measures_list[i].barline_type = measures[i].barline_type
+#		measures_list[i].load_figures(measures[i].figures)
 
 
 ## Sets all initial params for edition.
@@ -90,7 +89,6 @@ func setup(specs: Dictionary) -> void:
 	staff.setup(specs.measures_amount, specs.beats_per_measure)
 	# Sets the variables having to do with page handeling
 	update_page_values()
-	setup_players()
 
 
 func update_page_values() -> void:
@@ -99,15 +97,9 @@ func update_page_values() -> void:
 	current_page_index = 0
 
 
-func setup_players() -> void:
-	var manual_highlight_highlighter := HIGHLIGHTER_SCENE.new()
-	manual_highlight.setup(manual_highlight_highlighter)
-	var synchronizer_highlighter := HIGHLIGHTER_SCENE.new()
-	synchronizer.setup(synchronizer_highlighter)
-
 
 ## Does the necessary work before something can play (Synchronizer or Manual Highlight)
-func setup_to_play_whatever(whatevers_ui: Node) -> Array:
+func setup_to_play_whatever(whatevers_ui: Node) -> void:
 	# Deselect any measure that might be highlighted
 	if staff.highlighted_measure:
 		staff.highlighted_measure.highlighted = false
@@ -121,10 +113,6 @@ func setup_to_play_whatever(whatevers_ui: Node) -> Array:
 	current_page_index = 0
 	
 	staff.scale = Vector2(1.2, 1.2)
-	
-	var figures_list := []
-	figures_list = staff.get_figures()
-	return figures_list
 
 
 
@@ -140,58 +128,30 @@ func setup_to_stop_whatever(whatevers_ui: Node) -> void:
 	staff.scale = Vector2(1.0, 1.0)
 
 
-## This function is responsible for collecting all the info input by the user so the Synchronizer can use it. It is called when the PlayStopButton is toggled on.
 func start_playback() -> void:
 	#Prepares the playback (hide UI, turn to first page, etc)
-	var figures_list = setup_to_play_whatever(playback_button)
-	# Sets up the figures' duration_time depending on the highlight mode chosen by the user
-	# In case of automatic, it just has to convert each figure's duration into duration_time
-	if highlight_mode == HIGHLIGHT_MODE.AUTOMATIC:
-		for figure in figures_list:
-			figure.duration_time = figure.duration * synchronizer.beat_length
-	# In case of manual, it checks if the manual setting was already done correctly (by checking if duration_time was set for every figure), and raises a warning otherwise
-	else:
-		for figure in figures_list:
-			if not figure.duration_time:
-				# Returns the button to neutral state, as playback hasn't started
-				playback_button.set_pressed_no_signal(false)
-				print("Not all figures are marked!")
-				return
-	
+	setup_to_play_whatever(playback_button)
 
-	
 	# Start Synchronizer
-	synchronizer.start_playback(figures_list)
+	synchronizer_2.start_playback(staff)
 
 
 ## This function is called either when the PlayStopButton is toggled off or when the playback reached its end
-func stop_playback() -> void:
-	synchronizer.stop_playback()
+func stop_synchronizer() -> void:
+	synchronizer_2.stop()
 	setup_to_stop_whatever(playback_button)
 	# Sets the play button to unpressed, in case the stop is caused by the end of playback and not by the untoggling of the button
-	playback_button.set_pressed_no_signal(false)
+	if synchronizer_2.mode == Synchronizer2.MODE.PLAYBACK:
+		playback_button.set_pressed_no_signal(false)
+	else:
+		play_stop_recording_button.set_pressed_no_signal(false)
+	
 
 
 ## Starts ManualHighlight, allowing user to time the input so Synchronizer can reproduce it. Called when ManualHighlightUI's play button is pressed
-func start_manual_highlight():
-	var figures_list := setup_to_play_whatever(manual_highlight_ui)
-	manual_highlight.start(figures_list)
-
-
-## Stops ManualHighlight. Called whenever the stop button is pressed, or when all figures's time durations are saved.
-func stop_manual_highlight():
-	manual_highlight.stop()
-	setup_to_stop_whatever(manual_highlight_ui)
-	# Sets the play button to unpressed, in case the stop is caused by the end of figures to process and not by the untoggling of the button
-	play_stop_manual_button.set_pressed_no_signal(false)
-
-
-## Toggles mode. Button itself controls activation of its respective play button.
-func _on_manual_highlight_enabled_disabled(enabled):
-	if enabled:
-		highlight_mode = HIGHLIGHT_MODE.MANUAL
-	else:
-		highlight_mode = HIGHLIGHT_MODE.AUTOMATIC
+func start_duration_recording():
+	setup_to_play_whatever(manual_duration_setting_ui)
+	synchronizer_2.start_recording(staff)
 
 
 ## The next two functions allow page-turniing.
@@ -228,7 +188,7 @@ func _on_erase_button_pressed() -> void:
 
 
 ## Turns page when requested by some player (via request of the highlighter, which is the one who checks if the note highlighted is the last of the page or not).
-func _on_pageturn_requested(page_i: int) -> void:
+func _on_page_changed(page_i: int) -> void:
 	current_page_index = page_i
 
 
@@ -268,13 +228,9 @@ func _on_change_measures_submitted(amount: int, add: bool) -> void:
 
 
 func _on_audio_chosen(audio: AudioStreamMP3) -> void:
-	manual_highlight.update_audio(audio)
-	synchronizer.update_audio(audio)
+	synchronizer_2.set_audio(audio)
+	synchronizer_2.set_audio(audio)
 	MenuManager.return_to_first()
-
-## Sets initial delay. Can either be done manually in the beginning (TO BE IMPLEMENTED) or set by ManualHighlight based on how long the user takes to start pressing.
-func set_delay(delay):
-	synchronizer.initial_delay = delay
 
 
 

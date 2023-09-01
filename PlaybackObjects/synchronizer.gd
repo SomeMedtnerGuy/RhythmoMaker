@@ -32,17 +32,17 @@ func _ready():
 	set_process(false)
 
 
-func save_data() -> Dictionary:
-	var data := {}
-	data.audio = audio_stream_player.stream
-	data.initial_delay = initial_delay
-	
-	return data
-
-
-func load_data(specs: Dictionary) -> void:
-	audio_stream_player.stream = load(specs.audio)
-	initial_delay = specs.initial_delay
+#func save_data() -> Dictionary:
+#	var data := {}
+#	data.audio = audio_stream_player.stream
+#	data.initial_delay = initial_delay
+#
+#	return data
+#
+#
+#func load_data(specs: Dictionary) -> void:
+#	audio_stream_player.stream = load(specs.audio)
+#	initial_delay = specs.initial_delay
 
 
 func setup(highlighter: Highlighter) -> void:

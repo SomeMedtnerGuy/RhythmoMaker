@@ -41,16 +41,16 @@ var _beats_per_measure: float = 0.0
 @onready var marker_tracker: Node2D = $MarkerTracker
 
 
-func save_data() -> Dictionary:
-	var data := {
-		"measures_amount": len(get_measures()),
-		"beats_per_measure": _beats_per_measure,
-		"measures": []
-	}
-	for measure in get_measures():
-		data.measures.append(measure.save_data())
-	
-	return data
+#func save_data() -> Dictionary:
+#	var data := {
+#		"measures_amount": len(get_measures()),
+#		"beats_per_measure": _beats_per_measure,
+#		"measures": []
+#	}
+#	for measure in get_measures():
+#		data.measures.append(measure.save_data())
+#
+#	return data
 
 
 
@@ -109,6 +109,12 @@ func get_figures() -> Array:
 func toggle_measures_input(enable: bool) -> void:
 	for measure in get_measures():
 		measure.input_pickable = enable
+
+
+func serialize() -> Array:
+	var serialized_score := []
+	
+	return serialized_score
 
 
 ## Each measure input detection is connected to this function

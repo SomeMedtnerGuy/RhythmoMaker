@@ -7,12 +7,12 @@ signal stop_pressed
 
 
 @onready var manual_highlight_button := $HBoxContainer/ManualHighlightButton
-@onready var start_manual_highlight := $HBoxContainer/StartManualHighlight
+@onready var start_durations_recording := $HBoxContainer/StartDurationsRecording
 
 
 ## This toggle controls whether play button of manual highlight can be pressed or not.
 func _on_manual_highlight_button_toggled(button_pressed):
-	start_manual_highlight.disabled = not button_pressed
+	start_durations_recording.disabled = not button_pressed
 	# Editor must be informed so it sets the mode (which synchronizer must know to know how to define the timing of each figure
 	enabled_disabled.emit(button_pressed)
 

@@ -18,7 +18,7 @@ const SELECTABLE_SCENE := preload("res://BaseObjects/selectable.tscn")
 enum EDITOR { NONE, FIGURES, BARLINES, DYNAMICS, ORFF, SECTIONS }
 
 
-## Dictionaries that connect the different marker options to their respective sprites
+## Dictionaries that connect the different marker options to their respective texture_paths
 var dynamics_markers := {
 	Types.DYNAMICS.PIANISSIMO: "res://EditorsMenu/DynamicsEditor/Markers/DynamicsMarkers_1.png",
 	Types.DYNAMICS.PIANO: "res://EditorsMenu/DynamicsEditor/Markers/DynamicsMarkers_2.png",
@@ -54,7 +54,7 @@ var sections_markers := {
 	Types.SECTIONS.G: "res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersG.png",
 	Types.SECTIONS.H: "res://EditorsMenu/SectionsEditor/Markers/SectionsMarkersH.png"
 }
-## And this one connects the types of editor to their respective dictionary of markers
+## And this one connects the types of editor to their respective dictionary of markers-textures
 var type_to_markers := {
 	EDITOR.DYNAMICS: dynamics_markers,
 	EDITOR.ORFF: orffs_markers,
@@ -64,7 +64,6 @@ var type_to_markers := {
 ## Keeps track of which editor is open
 var active_editor := EDITOR.NONE
 
-@onready var markers: Node2D = $Markers
 ## The node that holds all the editors, where the user can choose one to be open
 @onready var editor_options_container := $EditorOptionsContainer
 ## This node holds all the editors themselves, but only the active editor is visible
@@ -103,7 +102,6 @@ func _on_editor_option_pressed(editor: EDITOR) -> void:
 	active_editor = editor
 	
 	# The following functions perform all the necessary steps to activate an editor. What each one does is described in the name, and the details are explained in the functions themselves.
-	
 	setup_active_editor()
 	# The moving_sprite is the image that pretends to be the clicked button, moving from original position to where the active_editor_button should be
 	var moving_sprite = create_moving_sprite()
@@ -230,19 +228,19 @@ func _on_barlines_editor_barline_chosen(barline: Types.BARLINES) -> void:
 
 ## All other editors create markers upon choice made, so they are connected here instead. 
 func _on_editor_marker_chosen(option) -> void:
+	# "type_to_markers" links the enum values of the different general types of markers that exist (dynamics, orffs and sections) to the dictionaries that will provide the correct textures. We find which general type should be used by checking which editor is currently active.
 	var markers_dict: Dictionary = type_to_markers[active_editor]
+	# Each "markers_dict" connects the enum value of the particular marker to the texture_path for that marker. The option was sent by the button itself.
 	var marker_texture_path: String = markers_dict[option]
+	# Now the marker is created with the newly found texture
 	var marker: Selectable = create_marker(marker_texture_path)
+	# After all is done, the marker should be sent to the tracker to be attached to the correct page
 	marker_chosen.emit(marker)
 
 ## A marker is an object that, when selected, moves along with the mouse.
 func create_marker(texture_path: String) -> Selectable:
 	var marker = SELECTABLE_SCENE.instantiate()
-	# "markers" links an enum value to a texture resource. That enum value represents the marker chosen to be created. Therefore, the texture that it is linked to should be the texture of the sprite of the marker object.
+	# "markers" links an enum value to a texture_path. That enum value represents the marker chosen to be created (sent by the marker's respective menus). Therefore, the texture_path that it is linked to should lead to the texture of the sprite of the marker object, so the function loads it and assigns it to the correct property of the marker.
 	marker.get_node("Sprite2D").texture = load(texture_path)
-	marker.texture_path = texture_path
+	# Returns the marker, so the caller can forward it to be attached to the page
 	return marker
-
-
-
-
