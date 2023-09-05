@@ -3,11 +3,12 @@
 class_name Measure
 extends Area2D
 
-## Sends out the selected state, passing itself so the editor can have a reference to it
+## Informs that the measure was clicked on, passing itself so Staff can have a reference to it. Ti can then compare with the previously selected measure and act accordingly
 signal selected_changed(measure)
 
 const BARLINES_SPRITESHEET := preload("res://Measure/Barlines.png")
-
+const BARLINE_SIZE := Vector2(40, 140)
+## Links barline types to where they are in the spritesheet
 const BARLINES_REGION := {
 	Types.BARLINES.SINGLE: Vector2(0, 0),
 	Types.BARLINES.DOUBLE: Vector2(40, 0),
@@ -28,56 +29,43 @@ var highlighted := false:
 		# Visual queue on the selection
 		selection_rect.visible = value
 
-
-
+## Holds the barline type of the measure, and sets flags accordingly to what the barlines represent
 @export var barline_type := Types.BARLINES.SINGLE:
 	set(value):
-		if barline:
-			if value == Types.BARLINES.STARTREP:
-				is_start_repeat = not is_start_repeat
-				start_rep_barline.visible = not start_rep_barline.visible
+		# The start rep barline is special, as is a toggle-button (either the barline is there or not.) This is mainly due to placement (it is the only barline that defines a characteristic of the measure that comes after it).
+		if value == Types.BARLINES.STARTREP:
+			# Toggling logic
+			is_start_repeat = not is_start_repeat
+			start_rep_barline.visible = not start_rep_barline.visible
+		else:
+			# All other barlines follow a similar logic: set the variable first, and the region afterwards (in case of the empty barline, no region)
+			barline_type = value
+			if barline_type == Types.BARLINES.EMPTY:
+				barline.region_rect = Rect2(0,0,0,0)
 			else:
-				barline_type = value
-				if barline_type == Types.BARLINES.EMPTY:
-					barline.region_rect = Rect2(0,0,0,0)
-				else:
-					barline.region_rect = Rect2(BARLINES_REGION[value], Vector2(40, 140))
+				barline.region_rect = Rect2(BARLINES_REGION[value], BARLINE_SIZE)
 
+## Holds whether measure is the last of its page. Used for page turning.
 var is_last_of_page := false
+## Holds whether measure is start of repeat. If yes, Synchronizer will save it and return to it whenever reaches an end repeat measure
 var is_start_repeat := false
 
 
 ## Used to place the figures proportionally to the length of the measure
-@onready var pathfollow2d := $Path2D/PathFollow2D
-@onready var selection_rect := $SelectionRect
-@onready var figures = $Figures
-@onready var barline = $Barline
+@onready var pathfollow2d: PathFollow2D = $Path2D/PathFollow2D
+@onready var selection_rect: ColorRect = $SelectionRect
+@onready var figures: Node = $Figures
+@onready var barline: Sprite2D = $Barline
 @onready var start_rep_barline: Sprite2D = $StartRepBarline
 @onready var measure_length: float = $Path2D.curve.get_baked_length()
 
 
-#func save_data() -> Dictionary:
-#	var figures_list := []
-#	for figure in figures.get_children():
-#		figures_list.append(figure.save_data())
-#	var save_dict := {
-#		"barline_type": barline_type,
-#		"figures": figures_list
-#	}
-#	return save_dict
-#
-#
-#func load_figures(figures_list: Array) -> void:
-#	for figure_specs in figures_list:
-#		place_figure(figure_specs)
-
-
-
-## Places a rhythmic figure with duration "duration" in the measure
+## Places a rhythmic figure with duration (in beats) in the measure
 func place_figure(figure_specs: Dictionary, current_page_i: int) -> void:
 	var duration: float = figure_specs.duration
 	var is_rest: bool = figure_specs.is_rest
 	
+	# Before adding the figure, we must know how filled the measure already is
 	var current_duration := calculate_current_duration()
 	
 	# In case the added figure makes the measure too long, dont place it
@@ -94,8 +82,9 @@ func place_figure(figure_specs: Dictionary, current_page_i: int) -> void:
 	var figure := RHYTHMIC_FIGURE.instantiate()
 	# Holds how long this figure lasts in relation to the total duration of the measure
 	var duration_percentage := duration / beats_amount
-	# Calculates how long the beams should be, based on how long the figure lasts (so it connects only to the next one). I cannot for the life of me understand why the fuck duration_percentage * measure_length by itself doesn't work (gives a much larger width, especially on the dotted eighth), so a cut, also proportional to the duration percentage, is made. It works, but it also itches.
-	var sprite_width := (duration_percentage * measure_length) - (duration_percentage * 65.0)
+	# Calculates how long the beams should be, based on how long the figure lasts (so it connects only to the next one)
+	var sprite_width := (duration_percentage * measure_length)
+	# Creates the dict with the necessary specs for the figure to be created
 	var params := {duration = duration, is_rest = is_rest, sprite_width = sprite_width, page_i = current_page_i}
 	figure.setup(params)
 	figures.add_child(figure)
@@ -103,8 +92,6 @@ func place_figure(figure_specs: Dictionary, current_page_i: int) -> void:
 	# Places the figure according to how long it is compared to the length of the measure, having into account how many figures were already placed.
 	pathfollow2d.progress_ratio = current_duration / beats_amount
 	figure.position = pathfollow2d.position
-	if current_duration == 0 and barline_type == Types.BARLINES.STARTREP:
-		figure.is_first_of_rep = true
 	
 	# Recalculates current duration (with the new figure taken into account), so the next check works
 	current_duration = calculate_current_duration()
@@ -112,9 +99,6 @@ func place_figure(figure_specs: Dictionary, current_page_i: int) -> void:
 	# If so, run the function that makes the beam connections for the current, recently completed beat.
 	if current_duration - int(current_duration) == 0.0:
 		make_connections()
-		
-		if int(current_duration) == beats_amount and barline_type == Types.BARLINES.ENDREP:
-			figure.is_last_of_rep = true
 
 
 ## Groups beams that should be grouped. At some point it should be dynamic, but as the rules are surprisingly complex, right now it is done on a case by case basis.
@@ -163,6 +147,7 @@ func delete_last_figure() -> void:
 		figures.get_child(-1).queue_free()
 
 
+## Returns figues present in the measure
 func get_figures() -> Array:
 	return figures.get_children()
 

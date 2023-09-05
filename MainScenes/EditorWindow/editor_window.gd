@@ -1,16 +1,14 @@
 class_name EditorWindow
 extends Node
 
-# Options for highlighting mode (explained below)
-#enum HIGHLIGHT_MODE {AUTOMATIC, MANUAL}
-
+## These constants hold the color values of the inactive_indicator, which should make the window fade whenever settings menu is open
 const MODULATE_COLOR_ACTIVE := Color(1,1,1,1)
 const MODULATE_COLOR_INACTIVE := Color(1,1,1,0.34)
-
+## Color of the measure selection
 const NEUTRAL_COLOR := Color.WHITE
 const HIGHLIGHT_COLOR := Color.LIGHT_YELLOW
 
-
+## Holds whether EditorWindow should be active or not. Setter changes its indicator and process_mode accordingly. Input detection of buttons and measures should be disabled during inactivity, and because children inherit process_mode of parents, by disabling EditorWindow, this propagates down the chain and has the desired effect.
 var active := true:
 	set(value):
 		active = value
@@ -22,65 +20,44 @@ var active := true:
 			process_mode = Node.PROCESS_MODE_DISABLED
 
 
-# Automatic: Length of figures is calculated automatically from BPM value. Easy to use and extremely precise, but cannot take into account variations of tempo during the track. Ideal for computer-produced music and music performed at metronomic speed.
-# Manual: Length of figures is manually set by user. Requires user to perform along the music once, so synchronizer can know how long exactly each figure is. Needs manual setting, but highly customizable. Ideal for music that slows down or speeds up during performance. 
-#@export var highlight_mode: HIGHLIGHT_MODE = HIGHLIGHT_MODE.AUTOMATIC :
-#	set(value):
-#		highlight_mode = value
-#		# if manual mode is set, figures should not have time durations until user sets them. This setter resets that variable, which could contain values from previous actions (like pressing play in automatic mode, which calculates these values automatically).
-#		if value == HIGHLIGHT_MODE.MANUAL:
-#			for figure in staff.get_figures():
-#				figure.duration_time = 0.0
-
-
-## Number of pages present in staff. This number will depend on how many measures the user inputs. Used to avoid the page-turning to turn more pages than it should.
+## Number of pages present in staff. This number will depend on how many measures the user inputs. Used to avoid the page-turning system to turn more pages than it should.
 var number_of_pages: int
 ## An array containing the pages themselves
 var pages_array: Array
-
-
 ## Holds the index of the current page, and the setter sends the correct page to the current_page variable 
 var current_page_index: int :
 	set(value):
 		# Avoids the page index to leave the outer bounds of the number of pages
 		current_page_index = clamp(value, 0, number_of_pages - 1)
+		# Setter of staff.current_page handles visibility of pages, so all EditorWindow must do is set that variable
 		staff.current_page = pages_array[current_page_index]
 		# Updates the label that shows the page number
 		page_number_label.text = "Página: %d" % (value + 1)
 
 
-
-
-
-@onready var inactive_indicator := $InactiveIndicator
+@onready var inactive_indicator: CanvasModulate = $InactiveIndicator
 @onready var staff: Staff = $Staff
 @onready var marker_tracker: MarkerTracker = $Staff/MarkerTracker
 @onready var pages: Node2D = $Staff/Pages
-@onready var page_number_label := $UiContainer/UI/PageNumberLabel
-@onready var editor_tools := $UiContainer/UI/Tools
-@onready var editors_menu := $UiContainer/UI/Tools/EditorsMenu
-@onready var erase_button := $UiContainer/UI/Tools/EraseButton
-@onready var play_stop_recording_button := $UiContainer/UI/ManualDurationSettingUI/HBoxContainer/StartDurationsRecording
-@onready var playback_button := $UiContainer/UI/PlaybackButton
+@onready var page_number_label: Label = $UiContainer/UI/PageNumberLabel
+@onready var editor_tools: Control = $UiContainer/UI/Tools
+@onready var editors_menu: EditorsMenu = $UiContainer/UI/Tools/EditorsMenu
+@onready var erase_button: TextureButton = $UiContainer/UI/Tools/EraseButton
+@onready var play_stop_recording_button: TextureButton = $UiContainer/UI/ManualDurationSettingUI/HBoxContainer/StartDurationsRecording
+@onready var playback_button: TextureButton = $UiContainer/UI/PlaybackButton
 @onready var manual_duration_setting_ui: Panel = $UiContainer/UI/ManualDurationSettingUI
-@onready var synchronizer_2: Synchronizer2 = $Synchronizer2
+@onready var synchronizer: Synchronizer = $Synchronizer
 
 
 
 func _ready() -> void:
+	# Connects signals from the event bus
 	EventBus.change_measures_submitted.connect(_on_change_measures_submitted)
 	EventBus.audio_chosen.connect(_on_audio_chosen)
+	
+	# These signals make the marker_traker know whether is the right time to delete markers (by hovering them over trash).
 	erase_button.mouse_entered.connect(marker_tracker._on_hover_over_trash.bind(true))
 	erase_button.mouse_exited.connect(marker_tracker._on_hover_over_trash.bind(false))
-
-
-#func load_data(specs: Dictionary) -> void:
-#	setup(specs)
-#	var measures: Array = specs.measures
-#	var measures_list: Array = staff.get_measures()
-#	for i in len(measures_list):
-#		measures_list[i].barline_type = measures[i].barline_type
-#		measures_list[i].load_figures(measures[i].figures)
 
 
 ## Sets all initial params for edition.
@@ -91,14 +68,14 @@ func setup(specs: Dictionary) -> void:
 	update_page_values()
 
 
+## Sets the variables having to do with page handeling
 func update_page_values() -> void:
 	pages_array = staff.get_pages()
 	number_of_pages = len(pages_array)
 	current_page_index = 0
 
 
-
-## Does the necessary work before something can play (Synchronizer or Manual Highlight)
+## Does the necessary work before something can play (Synchronizer or ManualDurationSetting)
 func setup_to_play_whatever(whatevers_ui: Node) -> void:
 	# Deselect any measure that might be highlighted
 	if staff.highlighted_measure:
@@ -108,12 +85,10 @@ func setup_to_play_whatever(whatevers_ui: Node) -> void:
 	# Hide all UI except the relevant stop button
 	whatevers_ui.remove_from_group("nodes_to_hide")
 	get_tree().call_group("nodes_to_hide", "hide")
-	
 	# Since playback starts from the beginning of the piece turn page to the beginning of the staff
 	current_page_index = 0
-	
-	staff.scale = Vector2(1.2, 1.2)
-
+	# Set the staff to playing scale
+	staff.scale = Staff.PLAYING_SCALE
 
 
 ## Reverts the work done by setup_to_play_whatever, called whenever what is playing stops
@@ -124,34 +99,34 @@ func setup_to_stop_whatever(whatevers_ui: Node) -> void:
 	get_tree().call_group("nodes_to_hide", "show")
 	# Allow relevant UI to be hidden if another node needs to hide it
 	whatevers_ui.add_to_group("nodes_to_hide")
-	
-	staff.scale = Vector2(1.0, 1.0)
+	# Reverts scale of staff to default
+	staff.scale = Staff.DEFAULT_SCALE
 
 
+## Starts Syncronizer in Playback Mode, the whole point of this software. Just plays the audio with the highlight in sync with it, based either in automatic calculation or manual setting of durations of each figure.
 func start_playback() -> void:
 	#Prepares the playback (hide UI, turn to first page, etc)
 	setup_to_play_whatever(playback_button)
-
 	# Start Synchronizer
-	synchronizer_2.start_playback(staff)
+	synchronizer.start_playback(staff)
 
 
-## This function is called either when the PlayStopButton is toggled off or when the playback reached its end
+## Starts Synchronizer in Manual Duration Setting Mode, allowing user to time the input so it can reproduce it. Called when ManualDurationSettingUI's play button is pressed
+func start_duration_recording():
+	setup_to_play_whatever(manual_duration_setting_ui)
+	synchronizer.start_recording(staff)
+
+
+## This function is called either when the PlayStopButton is toggled off or when the playback or manual duration setting reached its end
 func stop_synchronizer() -> void:
-	synchronizer_2.stop()
+	# Lets Synchronizer handle its stopping behaviour
+	synchronizer.stop()
 	setup_to_stop_whatever(playback_button)
 	# Sets the play button to unpressed, in case the stop is caused by the end of playback and not by the untoggling of the button
-	if synchronizer_2.mode == Synchronizer2.MODE.PLAYBACK:
+	if synchronizer.mode == Synchronizer.MODE.PLAYBACK:
 		playback_button.set_pressed_no_signal(false)
 	else:
 		play_stop_recording_button.set_pressed_no_signal(false)
-	
-
-
-## Starts ManualHighlight, allowing user to time the input so Synchronizer can reproduce it. Called when ManualHighlightUI's play button is pressed
-func start_duration_recording():
-	setup_to_play_whatever(manual_duration_setting_ui)
-	synchronizer_2.start_recording(staff)
 
 
 ## The next two functions allow page-turniing.
@@ -169,14 +144,15 @@ func _on_next_page_button_pressed():
 	current_page_index += 1
 
 
-## When a figure is chosen in the editor tool, the editor sends it to the measure currently highlighted for placement
+## When a figure is chosen in the editor tool, the editor sends its specs to the measure currently highlighted for creation and placement
 func _on_figure_buttons_container_figure_chosen(figure_specs: Dictionary) -> void:
 	# Only place the figure if there is a measure selected
 	if staff.highlighted_measure:
 		staff.highlighted_measure.place_figure(figure_specs, current_page_index)
 
 
-func _on_tools_menu_barline_chosen(barline) -> void:
+## Same thing happens to barlines.
+func _on_tools_menu_barline_chosen(barline: Types.BARLINES) -> void:
 	if staff.highlighted_measure:
 		staff.highlighted_measure.barline_type = barline
 
@@ -187,52 +163,31 @@ func _on_erase_button_pressed() -> void:
 		staff.highlighted_measure.delete_last_figure()
 
 
-## Turns page when requested by some player (via request of the highlighter, which is the one who checks if the note highlighted is the last of the page or not).
+## Turns page when requested by some player (via request of the Highlighter, which is the one who checks if the note highlighted is the last of the page or not).
 func _on_page_changed(page_i: int) -> void:
 	current_page_index = page_i
 
 
-## Callback of the signal emitted by the add/remove measures
+## Callback of the signal emitted by the add/remove measures menu. This function handles both, so the "add" parameter is a bool that'll simply define which Staff function to call
 func _on_change_measures_submitted(amount: int, add: bool) -> void:
 	staff.highlighted_measure = null
-	# "Add" logic
 	if add:
 		staff.add_measures(amount)
-	# "Remove" logic
 	else:
-		var measures: Array = staff.get_measures()
-		# Variable which holds the measure being deleted at a given point in the following while loop
-		var last_deleted_measure: Measure
-		while amount != 0:
-			# Get the last measure of the list and delete it
-			last_deleted_measure = measures[-1]
-			last_deleted_measure.queue_free()
-			# Remove it from the list (soon to be a null value)
-			measures.pop_back()
-			# One less measure to worry about!
-			amount -= 1
-		# If the last measure hasn't been deleted yet, wait until it is, because we need to accurately get the number of measures of any given page
-		if last_deleted_measure:
-			await last_deleted_measure.tree_exited
-		
-		# Handles page deletion in case no measures are present in it after removal process
-		for page in staff.get_pages():
-			if page.get_child_count() == 0:
-				page.queue_free()
-				# Needed to accurately update page values
-				await page.tree_exited
+		# "await" is needed here beause "update_page_values()" must be called only after all measure and page deletion is properly handled
+		await staff.remove_measures(amount)
 	
 	update_page_values()
 	# Close the MainMenu after done
 	MenuManager.return_to_first()
 
 
+## Callback from the load audio menu
 func _on_audio_chosen(audio: AudioStreamMP3) -> void:
-	synchronizer_2.set_audio(audio)
-	synchronizer_2.set_audio(audio)
+	synchronizer.set_audio(audio)
 	MenuManager.return_to_first()
 
 
-
+## Callback from the forwarded signal from one of the marker menus. The type is sent to the MarkerTracker for its creation and placement
 func _on_editors_menu_marker_chosen(marker: Selectable) -> void:
 	marker_tracker.add_marker(marker)

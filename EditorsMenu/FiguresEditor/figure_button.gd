@@ -15,20 +15,17 @@ const DURATION_TO_REGION_X := {
 	0.25: 256.0
 }
 
-## As the rests are placed 120px below their sound counterparts, this maps whether a figure is a rest or not to the respective sprite y position in the spritesheet
+## As the rests are placed 128px below their sound counterparts, this maps whether a figure is a rest or not to the respective sprite y position in the spritesheet
 const IS_REST_TO_REGION_Y := {
 	false: 0.0,
 	true: 128.0,
 }
 
-## The spritesheet used to draw the buttons
-const ATLAS := preload("res://EditorsMenu/FiguresEditor/FiguresButtons.png")
-
 ## The duration of the figure that the button holds. Determines the sprite drawn and the duration sent out when clicked
 @export var duration := 1.0
 
 ## Flag that states whether the figure is a rest or not, based on whether the rest toggle button is on. Setter redraws textures.
-var is_rest: bool :
+var is_rest := false:
 	set(value):
 		is_rest = value
 		texture_normal.region = Rect2(DURATION_TO_REGION_X[duration], IS_REST_TO_REGION_Y[value], SIZE, SIZE)
@@ -36,10 +33,6 @@ var is_rest: bool :
 		queue_redraw()
 
 
-## Sets initial textures
-func _ready():
-	texture_normal = AtlasTexture.new()
-	texture_normal.atlas = ATLAS
-	texture_pressed = AtlasTexture.new()
-	texture_pressed.atlas = ATLAS
+func _ready() -> void:
+	# Prevents glitch where the pressed texture is wrongly set at instantiation.No idea why it happens (if is_rest setter didn't run, nothing should show up, and if it did, the textures should all be set correctly). But rerunning the setter seems to fix it.
 	is_rest = false

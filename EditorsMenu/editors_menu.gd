@@ -159,6 +159,8 @@ func create_moving_sprite() -> Sprite2D:
 
 ## Simply fades out all editor options by tweening its alpha value all the way down to 0. Since the sprite of the chosen button is already there at its position, it gives the ilusion that the button doesn't disappear.
 func fade_out_editor_options() -> void:
+	# Makes sure button cannot be innteracted more than once before disappearing
+	editor_options_container.process_mode = Node.PROCESS_MODE_DISABLED
 	var tween := create_tween()
 	tween.tween_property(editor_options_container, "modulate:a", 0, 0.5)
 	await tween.finished
@@ -173,6 +175,7 @@ func fade_in_editor_options() -> void:
 	tween.tween_property(editor_options_container, "modulate:a", 1, 0.5)
 	# Still needs this await so the caller of this function does not move on before the tween is finished
 	await tween.finished
+	editor_options_container.process_mode = Node.PROCESS_MODE_INHERIT
 
 
 ## Moves the "pretend-button" (aka the sprite) from its position to the left edge.
@@ -207,10 +210,13 @@ func fade_in_active_editor() -> void:
 	var tween = create_tween()
 	tween.tween_property(active_editor_container, "modulate:a", 1, 0.5)
 	await tween.finished
+	active_editor_container.process_mode = Node.PROCESS_MODE_INHERIT
 
 
 ## The opposite of fade_in_active_editor().
 func fade_out_active_editor() -> void:
+	# Makes sure the buttons in the active editor are immediately disabled, so they cannot be clicked more than once before disappearing
+	active_editor_container.process_mode = Node.PROCESS_MODE_DISABLED
 	var tween = create_tween()
 	tween.tween_property(active_editor_container, "modulate:a", 0, 0.5)
 	await tween.finished

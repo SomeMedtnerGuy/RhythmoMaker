@@ -13,7 +13,6 @@ const scenes :={
 func _ready() -> void:
 	# This signal is emitted by the new_project_menu's "create" button, the only button that triggers a scene change.
 	EventBus.project_specs_defined.connect(_on_project_specs_defined)
-	
 	change_scene(SCENES.START)
 
 

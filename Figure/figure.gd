@@ -38,8 +38,6 @@ var duration_time: float
 
 var is_rest := false
 var page_i := 0
-var is_first_of_rep := false
-var is_last_of_rep := false
 
 ## How wide the sprite is. Allows connections to neighbors no matter their distance to oneanother
 var sprite_width := 128.0:
