@@ -53,9 +53,13 @@ This project started as a tool for my mom to use, so the features present are su
 <!-- GETTING STARTED -->
 ## Getting Started
 
-All that is needed is to download the latest version of the project from  [this link](https://drive.google.com/drive/folders/14EzbgPs6xNWwsRa-FlGkv6kf6RbABdvQ?usp=drive_link) and export the two files in there.
+All that is needed is to download the latest version of the project from  [this link](https://drive.google.com/drive/folders/14EzbgPs6xNWwsRa-FlGkv6kf6RbABdvQ?usp=drive_link) and export the two files in there. Then, click on the executable to open the program. (The other file, ending in .pck, should remain untouched).
 
 *Note: Windows might show a warning about how the software might not be safe, simply because it has no way of making sure that I did not write mallicious code in there. In order to bypass that, I'd have to pay for a key, which for a sideproject is quite expensive right now. (I haven't changed the logo of the program, otherwise the warning would be worse.) Therefore, if you would not like to risk it, I understand! I plan to get that key asap and I'll inform you here when that happens. :)* 
+
+If you look into the folder again, you will see that two new folders were created, called "audio" and "projects". In "audio", you place all the music you want to build the rhythmograms to, for easy access. You will not have to open the "projects" folder, as it is the folder the program will use to save and load projects in a format it can read, so no need to worry about that one!
+
+So all you have to do is to simply place your mp3 files in the "audio" folder and you are good to go! You can even take the RhythmoMaker folder, place it in a pendrive or upload it to a cloud, and reuse it in whichever computer you'd like - all music and projects will be accessible!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -88,6 +92,7 @@ First created after version 0.2.1 was completed.
 - [ ] Add a measure of preparation before playback (with visual queues)
     
 
+You can check previous development stages in [my blog](https://hopefullyalotofstuff.blogspot.com/), where I post the Rhythmogram Devlog, among other random stuff.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
