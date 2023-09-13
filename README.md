@@ -37,16 +37,12 @@ A tool that allows teachers to create Rhythmograms
 This software allows music teachers to create rhythmograms, a type of score virtual rhythmic score that highlights figures in sync to the chosen music playing in the background. This is great for students to clap along a predetermined rhythm while listening to music.
 This project started as a tool for my mom to use, so the features present are suited to her needs. In case it catches on and reveals itself useful to more people, I'll add more functionality.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 ### Built With
 
 - Engine: Godot [https://godotengine.org/](https://godotengine.org/)
 - Sprite Assets: Pixelorama [https://orama-interactive.itch.io/pixelorama](https://orama-interactive.itch.io/pixelorama)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
@@ -60,8 +56,6 @@ All that is needed is to download the latest version of the project from  [this 
 If you look into the folder again, you will see that two new folders were created, called "audio" and "projects". In "audio", you place all the music you want to build the rhythmograms to, for easy access. You will not have to open the "projects" folder, as it is the folder the program will use to save and load projects in a format it can read, so no need to worry about that one!
 
 So all you have to do is to simply place your mp3 files in the "audio" folder and you are good to go! You can even take the RhythmoMaker folder, place it in a pendrive or upload it to a cloud, and reuse it in whichever computer you'd like - all music and projects will be accessible!
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
@@ -104,8 +98,6 @@ You can check previous development stages in [my blog](https://hopefullyalotofst
 If you have a suggestion that would make RhythmoMaker better, please send me an email (nunoventuradessousa@gmail.com) and I'll look into it. Please check if it is not already in the roadmap above.
 Thanks so much in advance for your help!!
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- LICENSE -->
@@ -134,8 +126,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- CONTACT -->
@@ -144,8 +134,6 @@ SOFTWARE.
 Nuno Ventura de Sousa - nunoventuradesousa@gmail.com
 
 Project Link: [https://github.com/SomeMedtnerGuy/RhythmoMaker](https://github.com/SomeMedtnerGuy/RhythmoMaker)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- ACKNOWLEDGeMENTS -->
