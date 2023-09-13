@@ -1,32 +1,6 @@
 # RhythmoMaker
 A tool that allows teachers to create Rhythmograms
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
 
 
 <!-- ABOUT THE PROJECT -->
@@ -34,9 +8,8 @@ A tool that allows teachers to create Rhythmograms
 
 ![Alt InitialScreenScreenshot](https://github.com/SomeMedtnerGuy/RhythmoMaker/assets/106471802/f2105a88-82d2-4ede-99dc-6343dfb1557e)
 
-This software allows music teachers to create rhythmograms, a type of score virtual rhythmic score that highlights figures in sync to the chosen music playing in the background. This is great for students to clap along a predetermined rhythm while listening to music.
+This software allows music teachers to create rhythmograms, a type of virtual rhythmic score that highlights figures in sync to the chosen music playing in the background. This is great for students to clap along a predetermined rhythm while listening to music.
 This project started as a tool for my mom to use, so the features present are suited to her needs. In case it catches on and reveals itself useful to more people, I'll add more functionality.
-
 
 
 ### Built With
@@ -62,11 +35,7 @@ So all you have to do is to simply place your mp3 files in the "audio" folder an
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+You can see a video that showcases the complete features of version 0.2.1 [here](https://www.youtube.com/watch?v=ly549D7FdWo)
 
 
 
@@ -75,20 +44,18 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 First created after version 0.2.1 was completed.
 
+- [ ] Multi-language Support
+    - [ ] English
 - [ ] Allow measures to be added to a new page without the previous one be completed (with 4)
-- [ ] Alllow user to choose between 2, 3 and 4 measures per line
+- [ ] Allow user to choose between 2, 3 and 4 measures per line
 - [ ] Allow pickups
 - [ ] Add CopyPaste ability
 - [ ] Improve figure connections
-- [ ] Multi-language Support
-    - [ ] English
 - [ ] Add visual customisation
 - [ ] Add a measure of preparation before playback (with visual queues)
     
 
 You can check previous development stages in [my blog](https://hopefullyalotofstuff.blogspot.com/), where I post the Rhythmogram Devlog, among other random stuff.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
@@ -136,9 +103,8 @@ Nuno Ventura de Sousa - nunoventuradesousa@gmail.com
 Project Link: [https://github.com/SomeMedtnerGuy/RhythmoMaker](https://github.com/SomeMedtnerGuy/RhythmoMaker)
 
 
+
 <!-- ACKNOWLEDGeMENTS -->
 ## Acknowledgements
 
 Portion of readme template by @kidonng
-
-
