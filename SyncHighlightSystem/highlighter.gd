@@ -74,18 +74,15 @@ func next() -> Figure:
 		if _measures[_m].get_figures().is_empty():
 			finished.emit()
 			return null
-		# Here a check is made to see if the highlighter should come back here when it encounters a repeat sign.
-		if _measures[_m].is_start_repeat:
-			# Save the measure in the right spot
-			start_rep = Vector2(_p, _m)
-			# As we are seeing this barline for the first time at this point, it means we haven't arrived here from a repetition. So, a flag update is in order
-			_has_repeated = false
+		# Checks if the current measure has a start rep barline, and performs the necessary logic to return to this measure when an end_rep barline is found
+		check_for_start_rep()
 	
 	# The final check is for pages
 	elif more_pages_exist():
 		_p += 1
 		_m = 0
 		_f = 0
+		check_for_start_rep()
 	
 	# If there are no figures left, just announce it and leave
 	else:
@@ -120,6 +117,16 @@ func more_measures_exist() -> bool:
 ## Returns true if more pages exist after the current one, false otherwise
 func more_pages_exist() -> bool:
 	return _p + 1 <= len(_pages) - 1
+
+
+func check_for_start_rep() -> void:
+	update_arrays()
+	# Here a check is made to see if the highlighter should come back here when it encounters a repeat sign.
+	if _measures[_m].is_start_repeat:
+		# Save the measure in the right spot
+		start_rep = Vector2(_p, _m)
+		# As we are seeing this barline for the first time at this point, it means we haven't arrived here from a repetition. So, a flag update is in order
+		_has_repeated = false
 
 
 ## Whenever the index vars change, the arrays must be updated. This functions does that
