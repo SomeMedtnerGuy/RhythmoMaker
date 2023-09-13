@@ -24,14 +24,22 @@ func _on_open_pressed() -> void:
 		if not FileAccess.file_exists(path):
 			print("This file cannot be open!")
 			return 
+		var save_file := FileAccess.open(path, FileAccess.READ)
 		
-		var save_dict := FileAccess.open(path, FileAccess.READ)
-		var json_string := save_dict.get_line()
-		var json := JSON.new()
-		var parse_result = json.parse(json_string)
-		if not parse_result == OK:
-			print("JSON Parse Error: ", json.get_error_message(), " in ", json_string, " at line ", json.get_error_line())
-			return
-		var saved_data = json.get_data()
-		
-		EventBus.project_specs_defined.emit(saved_data)
+		var saved_data := {
+			"misc_vars": get_saved_data(save_file),
+			"measures_figures": get_saved_data(save_file),
+			"pages_markers": get_saved_data(save_file),
+			"synchronizer_vars": get_saved_data(save_file)
+		}
+		EventBus.open_project_requested.emit(saved_data)
+
+
+func get_saved_data(save_file: FileAccess) -> Variant:
+	var json_string = save_file.get_line()
+	var json = JSON.new()
+	var parse_result = json.parse(json_string)
+	if not parse_result == OK:
+		print("JSON Parse Error: ", json.get_error_message(), " in ", json_string, " at line ", json.get_error_line())
+		return {}
+	return json.get_data()

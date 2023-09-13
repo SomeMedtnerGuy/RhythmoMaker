@@ -22,6 +22,8 @@ var selected := true:
 			sprite.modulate = DEFAULT_COLOR
 			selection_toggled.emit(self, false)
 
+## Used to save and load texture
+var texture_path: String
 @onready var sprite := $Sprite2D
 
 

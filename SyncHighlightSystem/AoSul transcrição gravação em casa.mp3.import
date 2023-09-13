@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://1h8eup52w6xf"
+path="res://.godot/imported/AoSul transcrição gravação em casa.mp3-c26a7e8148cb2685bb9f782135ba57fc.mp3str"
+
+[deps]
+
+source_file="res://SyncHighlightSystem/AoSul transcrição gravação em casa.mp3"
+dest_files=["res://.godot/imported/AoSul transcrição gravação em casa.mp3-c26a7e8148cb2685bb9f782135ba57fc.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

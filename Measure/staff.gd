@@ -47,22 +47,28 @@ var _beats_per_measure: float = 0.0
 
 ## All the setup function does is add "measures_amount" measures with "beats_per_measure" beats to the staff
 func setup(measures_amount: int, beats_per_measure: int) -> void:
+	update_beats_per_measure(beats_per_measure)
+	for measure_no in measures_amount:
+		add_measure()
+
+
+func update_beats_per_measure(beats_per_measure: int) -> void:
 	_beats_per_measure = beats_per_measure
-	add_measures(measures_amount)
 
 
 ## Places measures in the correct pages
-func add_measures(amount: int, barline_type: Types.BARLINES = Types.BARLINES.SINGLE) -> void:
-	for measure_no in amount:
-		# Creates a new page in case it is the first page or the previous one is full
-		if not get_pages() or len(get_measures()) % MeasuresPage.MAX_MEASURES_AMOUNT == 0:
-			create_measure_page()
-		var last_page = get_pages()[-1]
-		var measure := MEASURE_SCENE.instantiate()
-		last_page.place_measure(measure)
-		measure.beats_amount = _beats_per_measure
-		measure.barline_type = barline_type
-		measure.selected_changed.connect(_on_measure_selected_changed)
+func add_measure() -> Measure:
+	# Creates a new page in case it is the first page or the previous one is full
+	if not get_pages() or len(get_measures()) % MeasuresPage.MAX_MEASURES_AMOUNT == 0:
+		create_measure_page()
+	var last_page = get_pages()[-1]
+	var measure := MEASURE_SCENE.instantiate()
+	last_page.place_measure(measure)
+	measure.beats_amount = _beats_per_measure
+	measure.barline_type = Types.BARLINES.SINGLE
+	measure.selected_changed.connect(_on_measure_selected_changed)
+	measure.filled.connect(_on_measure_filled)
+	return measure
 
 
 ## Removes the last "amount" measures from the staff
@@ -132,3 +138,11 @@ func toggle_measures_input(enable: bool) -> void:
 ## Each measure input detection is connected to this function. highlighted_measure's setter handles logic
 func _on_measure_selected_changed(measure: Measure):
 	highlighted_measure = measure
+
+
+## Selects the next measure if there are any
+func _on_measure_filled() -> void:
+	var measures = get_measures()
+	var measure_i = measures.find(highlighted_measure)
+	if measure_i + 1 < len(measures):
+		highlighted_measure = measures[measure_i + 1]

@@ -51,7 +51,7 @@ region = Rect2(192, 64, 64, 64)
 
 [sub_resource type="Resource" id="Resource_04v0e"]
 script = ExtResource("4_jbodj")
-type = 2
+type = 3
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_16jpu"]
 atlas = ExtResource("2_dnp2r")
@@ -108,7 +108,6 @@ offset_bottom = 64.0
 grow_horizontal = 2
 alignment = 1
 script = ExtResource("1_gblav")
-editor_type = 5
 
 [node name="A" type="TextureButton" parent="."]
 layout_mode = 2

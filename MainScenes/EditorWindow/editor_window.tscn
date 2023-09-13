@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://MainScenes/EditorWindow/editor_window.gd" id="1_06pkd"]
 [ext_resource type="Script" path="res://Measure/staff.gd" id="2_0wgmb"]
 [ext_resource type="Script" path="res://marker_tracker.gd" id="3_mgall"]
-[ext_resource type="Script" path="res://SyncHighlightSystem/synchronizer.gd" id="4_tk765"]
+[ext_resource type="PackedScene" uid="uid://d3i4yng2jvopl" path="res://SyncHighlightSystem/synchronizer.tscn" id="4_dgrg8"]
 [ext_resource type="PackedScene" uid="uid://ddve6ma1p2w14" path="res://PlaybackObjects/manual_duration_setting_ui.tscn" id="5_hwvl5"]
 [ext_resource type="FontFile" uid="uid://dcprkn2psj6lk" path="res://AssetsAndResources/PublicPixel-z84yD.ttf" id="6_2sixr"]
 [ext_resource type="PackedScene" uid="uid://cefxhem88bimp" path="res://EditorsMenu/editors_menu.tscn" id="7_p0lq7"]
@@ -41,17 +41,29 @@ metadata/_edit_horizontal_guides_ = [360.0]
 position = Vector2(640, 384)
 script = ExtResource("2_0wgmb")
 
+[node name="ReferenceRect" type="ReferenceRect" parent="Staff"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -520.0
+offset_top = -288.0
+offset_right = 520.0
+offset_bottom = 192.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+border_color = Color(0.0313726, 0, 0, 1)
+border_width = 2.0
+editor_only = false
+
 [node name="MarkerTracker" type="Node2D" parent="Staff"]
 script = ExtResource("3_mgall")
 
 [node name="Pages" type="Node2D" parent="Staff"]
 
-[node name="Synchronizer" type="Node" parent="."]
-script = ExtResource("4_tk765")
-first_highlight_delay = 1.5
-_track_bpm = 109
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Synchronizer"]
+[node name="Synchronizer" parent="." instance=ExtResource("4_dgrg8")]
 
 [node name="UiContainer" type="MarginContainer" parent="."]
 anchors_preset = 15
@@ -161,6 +173,10 @@ toggle_mode = true
 texture_normal = ExtResource("12_8v7ey")
 texture_pressed = ExtResource("13_pptx1")
 script = ExtResource("14_3t1b5")
+
+[node name="SaveConfirmed" type="AcceptDialog" parent="."]
+initial_position = 1
+dialog_text = "Projeto guardado."
 
 [connection signal="finished" from="Synchronizer" to="." method="stop_synchronizer"]
 [connection signal="page_changed" from="Synchronizer" to="." method="_on_page_changed"]

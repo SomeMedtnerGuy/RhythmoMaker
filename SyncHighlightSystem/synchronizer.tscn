@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3i4yng2jvopl"]
+
+[ext_resource type="Script" path="res://SyncHighlightSystem/synchronizer.gd" id="1_bqwdp"]
+
+[node name="Synchronizer" type="Node"]
+script = ExtResource("1_bqwdp")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+
+[node name="CorrectAudioLoading" type="AcceptDialog" parent="."]
+initial_position = 1
+dialog_text = "Audio importado corretamente."
+
+[node name="IncorrectAudioLoading" type="AcceptDialog" parent="."]
+initial_position = 1
+dialog_text = "Erro a importar áudio."

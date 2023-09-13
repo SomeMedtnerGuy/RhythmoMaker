@@ -51,7 +51,7 @@ ok_button_text = "Open"
 cancel_button_text = "Cancelar"
 mode_overrides_title = false
 file_mode = 0
-access = 1
+access = 2
 filters = PackedStringArray("*save; Save Files")
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/VBoxContainer/Search" to="." method="_on_search_pressed"]

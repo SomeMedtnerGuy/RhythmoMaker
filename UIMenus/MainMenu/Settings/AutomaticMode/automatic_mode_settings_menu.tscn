@@ -1,11 +1,32 @@
-[gd_scene load_steps=2 format=3 uid="uid://bjmtetewwmlk2"]
+[gd_scene load_steps=4 format=3 uid="uid://bjmtetewwmlk2"]
 
 [ext_resource type="PackedScene" uid="uid://yx0e6j2h537r" path="res://BaseObjects/base_menu.tscn" id="1_ihfjq"]
+[ext_resource type="Script" path="res://UIMenus/MainMenu/Settings/AutomaticMode/automatic_mode_settings_menu.gd" id="2_tp2b8"]
+[ext_resource type="PackedScene" uid="uid://d166ixo2ko56k" path="res://BaseObjects/settings_edit_field_base.tscn" id="3_oxus0"]
 
 [node name="AutomaticModeSettingsMenu" instance=ExtResource("1_ihfjq")]
+script = ExtResource("2_tp2b8")
 
 [node name="TitleLabel" parent="MarginContainer/VBoxContainer" index="0"]
 text = "Modo Automático"
+
+[node name="SetTempo" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" index="0" instance=ExtResource("3_oxus0")]
+layout_mode = 2
+
+[node name="Label" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/SetTempo" index="0"]
+text = "Tempo (bpm):"
+
+[node name="LineEdit" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/SetTempo" index="1"]
+text = "120"
+
+[node name="SetDelay" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer" index="1" instance=ExtResource("3_oxus0")]
+layout_mode = 2
+
+[node name="Label" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/SetDelay" index="0"]
+text = "Atraso inicial:"
+
+[node name="LineEdit" parent="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/SetDelay" index="1"]
+text = "0.0"
 
 [node name="Return" type="Button" parent="MarginContainer/VBoxContainer/OtherButtonsContainer" index="0" groups=["return_button"]]
 layout_mode = 2
@@ -16,3 +37,8 @@ text = "Voltar"
 layout_mode = 2
 size_flags_horizontal = 6
 text = "Gravar"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/OtherButtonsContainer/Save" to="." method="_on_save_pressed"]
+
+[editable path="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/SetTempo"]
+[editable path="MarginContainer/VBoxContainer/MarginContainer/OptionsContainer/SetDelay"]

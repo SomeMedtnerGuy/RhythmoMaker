@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://x40j3p2tldku"]
+[gd_scene load_steps=15 format=3 uid="uid://x40j3p2tldku"]
 
 [ext_resource type="Script" path="res://UIMenus/Trees/main_menu_tree.gd" id="1_su15j"]
 [ext_resource type="Texture2D" uid="uid://civepa5lxx2od" path="res://UIMenus/MainMenu/MenuButton.png" id="2_wmkc6"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://cju1wkj6avqnc" path="res://UIMenus/not_implemented_warning.tscn" id="9_dp54j"]
 [ext_resource type="PackedScene" uid="uid://b051m2sijexrn" path="res://UIMenus/MainMenu/Settings/General/load_audio.tscn" id="10_vatcn"]
 [ext_resource type="PackedScene" uid="uid://c8dxj3aw3wnuh" path="res://UIMenus/MainMenu/save_menu.tscn" id="12_u7ikl"]
+[ext_resource type="PackedScene" uid="uid://c2btivcth2gxk" path="res://UIMenus/StartMenu/open_menu.tscn" id="13_eo8mi"]
 
 [node name="MainMenuTree" type="Control"]
 layout_mode = 3
@@ -91,7 +92,7 @@ offset_top = -163.5
 offset_right = 328.0
 offset_bottom = 163.5
 
-[node name="AutomaticModeSettings" parent="." instance=ExtResource("8_nm3m3")]
+[node name="AutomaticSettings" parent="." instance=ExtResource("8_nm3m3")]
 visible = false
 layout_mode = 1
 offset_left = -250.0
@@ -101,18 +102,19 @@ offset_bottom = 128.0
 
 [node name="Save" parent="." instance=ExtResource("12_u7ikl")]
 visible = false
-layout_mode = 0
-anchors_preset = 0
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 200.0
-offset_bottom = 188.0
-grow_horizontal = 1
-grow_vertical = 1
+layout_mode = 1
+offset_left = -363.0
+offset_top = -140.0
+offset_right = 363.0
+offset_bottom = 140.0
+
+[node name="Open" parent="." instance=ExtResource("13_eo8mi")]
+visible = false
+layout_mode = 1
+offset_left = -320.0
+offset_top = -163.5
+offset_right = 320.0
+offset_bottom = 163.5
 
 [node name="NotImplementedWarning" parent="." instance=ExtResource("9_dp54j")]
 visible = false

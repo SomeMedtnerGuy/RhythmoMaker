@@ -33,7 +33,7 @@ text = "Gravar"
 [node name="FileDialog" type="FileDialog" parent="." index="2"]
 initial_position = 2
 size = Vector2i(658, 400)
-access = 1
+access = 2
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/OtherButtonsContainer/Save" to="." method="_on_save_pressed"]
 

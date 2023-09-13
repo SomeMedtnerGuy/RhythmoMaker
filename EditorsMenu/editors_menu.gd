@@ -248,5 +248,6 @@ func create_marker(texture_path: String) -> Selectable:
 	var marker = SELECTABLE_SCENE.instantiate()
 	# "markers" links an enum value to a texture_path. That enum value represents the marker chosen to be created (sent by the marker's respective menus). Therefore, the texture_path that it is linked to should lead to the texture of the sprite of the marker object, so the function loads it and assigns it to the correct property of the marker.
 	marker.get_node("Sprite2D").texture = load(texture_path)
+	marker.texture_path = texture_path
 	# Returns the marker, so the caller can forward it to be attached to the page
 	return marker

@@ -33,11 +33,8 @@ const RECT_SIZE_Y = 64
 
 ## Duration in beats
 var duration := 1.0
-## Duration in seconds, to be calculated after bpm is defined, or manual highlighting is performed. Used by synchronizer to know when to highlight
-var duration_time: float
 
 var is_rest := false
-var page_i := 0
 
 ## How wide the sprite is. Allows connections to neighbors no matter their distance to oneanother
 var sprite_width := 128.0:
@@ -45,28 +42,15 @@ var sprite_width := 128.0:
 		sprite_width = clamp(value, MIN_WIDTH, MAX_WIDTH)
 
 
-#func save_data() -> Dictionary:
-#	var save_dict := {
-#		"duration": duration,
-#		"is_rest": is_rest,
-#		"duration_time": duration_time,
-#	}
-#
-#	return save_dict
-
-
 func setup(params) -> void:
 	duration = params.duration
 	is_rest = params.is_rest
 	sprite_width = params.sprite_width
-	page_i = params.page_i
 	# Draws from spritesheet aaccording to duration, is_rest flag and the sprite width
 	region_rect = Rect2(
 		DURATION_TO_REGION_X[duration], IS_REST_TO_REGION_Y[is_rest], 
 		sprite_width, RECT_SIZE_Y
 	)
-	if params.has("duration_time"):
-		duration_time = params.duration_time
 
 
 ## OPTIONS: "next", "previous", "both"

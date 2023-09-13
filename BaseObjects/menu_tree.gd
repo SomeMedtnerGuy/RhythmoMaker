@@ -31,6 +31,22 @@ func _on_return_button_pressed() -> void:
 	MenuManager.return_to_previous()
 
 
-## Callback for QuitButtons' "pressed" signal. Exits the program.
+## Callback for QuitButtons' "pressed" signal. Creates a confirmation window.
 func _on_quit_button_pressed() -> void:
+	var quit_confirm = ConfirmationDialog.new()
+	add_child(quit_confirm)
+	quit_confirm.cancel_button_text = "Cancelar"
+	quit_confirm.ok_button_text = "Confirmar"
+	quit_confirm.dialog_text = "Tem a certeza que quer sair do programa?"
+	quit_confirm.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_PRIMARY_SCREEN
+	quit_confirm.confirmed.connect(_on_quit_confirmed)
+	quit_confirm.canceled.connect(_on_quit_canceled.bind(quit_confirm))
+	quit_confirm.visible = true
+
+
+func _on_quit_confirmed() -> void:
 	get_tree().quit()
+
+
+func _on_quit_canceled(quit_confirm: ConfirmationDialog) -> void:
+	quit_confirm.queue_free()

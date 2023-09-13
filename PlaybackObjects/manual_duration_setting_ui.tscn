@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://ddve6ma1p2w14"]
+[gd_scene load_steps=8 format=3 uid="uid://ddve6ma1p2w14"]
 
 [ext_resource type="StyleBox" uid="uid://5qmoyx73d6qp" path="res://AssetsAndResources/PanelStylebox.tres" id="1_yo8nd"]
 [ext_resource type="Script" path="res://PlaybackObjects/manual_duration_setting_ui.gd" id="2_0x873"]
@@ -6,6 +6,13 @@
 [ext_resource type="Texture2D" uid="uid://eadxnb0lrul2" path="res://PlaybackObjects/PlayButton.png" id="4_klndu"]
 [ext_resource type="Texture2D" uid="uid://mqvrpsujuce8" path="res://PlaybackObjects/StopButtonPressed.png" id="5_eq8jw"]
 [ext_resource type="Texture2D" uid="uid://c3dydjjjvjqbh" path="res://PlaybackObjects/PlayButtonDisabled.png" id="6_vj2sf"]
+
+[sub_resource type="GDScript" id="GDScript_5fh67"]
+script/source = "extends ConfirmationDialog
+
+func _ready():
+	get_label().horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+"
 
 [node name="ManualHighlightUI" type="Panel"]
 offset_right = 328.0
@@ -38,5 +45,16 @@ texture_normal = ExtResource("4_klndu")
 texture_pressed = ExtResource("5_eq8jw")
 texture_disabled = ExtResource("6_vj2sf")
 
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="HBoxContainer/StartDurationsRecording"]
+initial_position = 1
+size = Vector2i(473, 109)
+ok_button_text = "Confirmar"
+dialog_text = "No caso de já ter durações gravadas, estas serão apagadas. 
+Continuar mesmo assim?"
+cancel_button_text = "Cancelar"
+script = SubResource("GDScript_5fh67")
+
 [connection signal="toggled" from="HBoxContainer/ManualHighlightButton" to="." method="_on_manual_highlight_button_toggled"]
 [connection signal="toggled" from="HBoxContainer/StartDurationsRecording" to="." method="_on_start_manual_highlight_toggled"]
+[connection signal="canceled" from="HBoxContainer/StartDurationsRecording/ConfirmationDialog" to="." method="_on_confirmation_dialog_canceled"]
+[connection signal="confirmed" from="HBoxContainer/StartDurationsRecording/ConfirmationDialog" to="." method="_on_confirmation_dialog_confirmed"]

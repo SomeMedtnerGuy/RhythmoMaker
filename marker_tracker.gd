@@ -38,3 +38,13 @@ func _on_marker_selection_toggled(marker, was_selected) -> void:
 			current_marker.queue_free()
 		# In any case, it shouuld be deopped. If not at the trash's location, it'll stay at the position the mouse was in when left button was pressed
 		current_marker = null
+
+
+func place_saved_marker(specs: Dictionary, page: MeasuresPage) -> void:
+	var marker: Selectable = load("res://BaseObjects/selectable.tscn").instantiate()
+	page.markers.add_child(marker)
+	marker.selection_toggled.connect(_on_marker_selection_toggled)
+	marker.sprite.texture = load(specs.texture_path)
+	marker.texture_path = specs.texture_path
+	marker.selected = false
+	marker.position = Vector2(specs.pos_x, specs.pos_y)

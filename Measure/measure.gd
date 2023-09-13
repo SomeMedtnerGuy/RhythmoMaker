@@ -3,8 +3,10 @@
 class_name Measure
 extends Area2D
 
+
 ## Informs that the measure was clicked on, passing itself so Staff can have a reference to it. Ti can then compare with the previously selected measure and act accordingly
 signal selected_changed(measure)
+signal filled
 
 const BARLINES_SPRITESHEET := preload("res://Measure/Barlines.png")
 const BARLINE_SIZE := Vector2(40, 140)
@@ -32,24 +34,22 @@ var highlighted := false:
 ## Holds the barline type of the measure, and sets flags accordingly to what the barlines represent
 @export var barline_type := Types.BARLINES.SINGLE:
 	set(value):
-		# The start rep barline is special, as is a toggle-button (either the barline is there or not.) This is mainly due to placement (it is the only barline that defines a characteristic of the measure that comes after it).
-		if value == Types.BARLINES.STARTREP:
-			# Toggling logic
-			is_start_repeat = not is_start_repeat
-			start_rep_barline.visible = not start_rep_barline.visible
+		# All other barlines follow a similar logic: set the variable first, and the region afterwards (in case of the empty barline, no region)
+		barline_type = value
+		if barline_type == Types.BARLINES.EMPTY:
+			barline.region_rect = Rect2(0,0,0,0)
 		else:
-			# All other barlines follow a similar logic: set the variable first, and the region afterwards (in case of the empty barline, no region)
-			barline_type = value
-			if barline_type == Types.BARLINES.EMPTY:
-				barline.region_rect = Rect2(0,0,0,0)
-			else:
-				barline.region_rect = Rect2(BARLINES_REGION[value], BARLINE_SIZE)
+			barline.region_rect = Rect2(BARLINES_REGION[value], BARLINE_SIZE)
 
 ## Holds whether measure is the last of its page. Used for page turning.
 var is_last_of_page := false
 ## Holds whether measure is start of repeat. If yes, Synchronizer will save it and return to it whenever reaches an end repeat measure
-var is_start_repeat := false
+var is_start_repeat := false:
+	set(value):
+		is_start_repeat = value
+		start_rep_barline.visible = value
 
+var page: int
 
 ## Used to place the figures proportionally to the length of the measure
 @onready var pathfollow2d: PathFollow2D = $Path2D/PathFollow2D
@@ -61,7 +61,7 @@ var is_start_repeat := false
 
 
 ## Places a rhythmic figure with duration (in beats) in the measure
-func place_figure(figure_specs: Dictionary, current_page_i: int) -> void:
+func place_figure(figure_specs: Dictionary) -> void:
 	var duration: float = figure_specs.duration
 	var is_rest: bool = figure_specs.is_rest
 	
@@ -85,7 +85,7 @@ func place_figure(figure_specs: Dictionary, current_page_i: int) -> void:
 	# Calculates how long the beams should be, based on how long the figure lasts (so it connects only to the next one)
 	var sprite_width := (duration_percentage * measure_length)
 	# Creates the dict with the necessary specs for the figure to be created
-	var params := {duration = duration, is_rest = is_rest, sprite_width = sprite_width, page_i = current_page_i}
+	var params := {duration = duration, is_rest = is_rest, sprite_width = sprite_width}
 	figure.setup(params)
 	figures.add_child(figure)
 	
@@ -99,6 +99,10 @@ func place_figure(figure_specs: Dictionary, current_page_i: int) -> void:
 	# If so, run the function that makes the beam connections for the current, recently completed beat.
 	if current_duration - int(current_duration) == 0.0:
 		make_connections()
+	
+	# Emitted when, by placing the figure, it fills the measure
+	if current_duration >= beats_amount:
+		filled.emit()
 
 
 ## Groups beams that should be grouped. At some point it should be dynamic, but as the rules are surprisingly complex, right now it is done on a case by case basis.
@@ -131,6 +135,10 @@ func make_connections() -> void:
 			figures_array[-2].connect_to("both")
 			figures_array[-3].connect_to("both")
 			figures_array[-4].connect_to("next")
+		[0.5, 0.25, 0.25]:
+			figures_array[-1].connect_to("previous")
+			figures_array[-2].connect_to("next")
+			figures_array[-3].connect_to("next")
 
 
 ## Calculates how many beats total all placed figures in the measure

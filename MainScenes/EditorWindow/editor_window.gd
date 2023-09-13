@@ -8,6 +8,9 @@ const MODULATE_COLOR_INACTIVE := Color(1,1,1,0.34)
 const NEUTRAL_COLOR := Color.WHITE
 const HIGHLIGHT_COLOR := Color.LIGHT_YELLOW
 
+const DEFAULT_TEMPO := 120
+const DEFAULT_DELAY := 0.0
+
 ## Holds whether EditorWindow should be active or not. Setter changes its indicator and process_mode accordingly. Input detection of buttons and measures should be disabled during inactivity, and because children inherit process_mode of parents, by disabling EditorWindow, this propagates down the chain and has the desired effect.
 var active := true:
 	set(value):
@@ -32,7 +35,7 @@ var current_page_index: int :
 		# Setter of staff.current_page handles visibility of pages, so all EditorWindow must do is set that variable
 		staff.current_page = pages_array[current_page_index]
 		# Updates the label that shows the page number
-		page_number_label.text = "Página: %d" % (value + 1)
+		page_number_label.text = "Página: %d/%d" % [(current_page_index + 1), number_of_pages]
 
 
 @onready var inactive_indicator: CanvasModulate = $InactiveIndicator
@@ -47,6 +50,7 @@ var current_page_index: int :
 @onready var playback_button: TextureButton = $UiContainer/UI/PlaybackButton
 @onready var manual_duration_setting_ui: Panel = $UiContainer/UI/ManualDurationSettingUI
 @onready var synchronizer: Synchronizer = $Synchronizer
+@onready var save_confirmed: AcceptDialog = $SaveConfirmed
 
 
 
@@ -54,6 +58,13 @@ func _ready() -> void:
 	# Connects signals from the event bus
 	EventBus.change_measures_submitted.connect(_on_change_measures_submitted)
 	EventBus.audio_chosen.connect(_on_audio_chosen)
+	EventBus.tempo_submitted.connect(_on_tempo_submitted)
+	EventBus.delay_submitted.connect(_on_delay_submitted)
+	# Set synchronizer with the default values. Done here to run setters
+	EventBus.tempo_submitted.emit(DEFAULT_TEMPO)
+	EventBus.delay_submitted.emit(DEFAULT_DELAY)
+	
+	EventBus.save_project_requested.connect(_on_save_project_requested)
 	
 	# These signals make the marker_traker know whether is the right time to delete markers (by hovering them over trash).
 	erase_button.mouse_entered.connect(marker_tracker._on_hover_over_trash.bind(true))
@@ -65,6 +76,36 @@ func setup(specs: Dictionary) -> void:
 	
 	staff.setup(specs.measures_amount, specs.beats_per_measure)
 	# Sets the variables having to do with page handeling
+	update_page_values()
+
+
+func load_project(save_dict: Dictionary) -> void:
+	# Use misc vars
+	var misc_vars: Dictionary = save_dict.misc_vars
+	staff.update_beats_per_measure(misc_vars.beats_per_measure)
+	
+	# Place measures and figures
+	var measures_figures: Array = save_dict.measures_figures
+	for measure_specs in measures_figures:
+		var measure: Measure = staff.add_measure()
+		measure.barline_type = measure_specs.barline_type
+		measure.is_start_repeat = measure_specs.is_start_repeat
+		for figure_specs in measure_specs.figures:
+			measure.place_figure(figure_specs)
+	
+	# Place markers
+	var pages_markers = save_dict.pages_markers
+	var pages_list: Array = staff.get_pages()
+	for i in range(pages_markers.size()):
+		var current_page: MeasuresPage = pages_list[i]
+		for marker_specs in pages_markers[i]:
+			marker_tracker.place_saved_marker(marker_specs, current_page)
+	
+	# Set Synchronizer up
+	var synchronizer_vars: Dictionary = save_dict.synchronizer_vars
+	synchronizer.load_saved_vars(synchronizer_vars)
+	
+	
 	update_page_values()
 
 
@@ -121,11 +162,12 @@ func start_duration_recording():
 func stop_synchronizer() -> void:
 	# Lets Synchronizer handle its stopping behaviour
 	synchronizer.stop()
-	setup_to_stop_whatever(playback_button)
 	# Sets the play button to unpressed, in case the stop is caused by the end of playback and not by the untoggling of the button
 	if synchronizer.mode == Synchronizer.MODE.PLAYBACK:
+		setup_to_stop_whatever(playback_button)
 		playback_button.set_pressed_no_signal(false)
 	else:
+		setup_to_stop_whatever(manual_duration_setting_ui)
 		play_stop_recording_button.set_pressed_no_signal(false)
 
 
@@ -148,13 +190,16 @@ func _on_next_page_button_pressed():
 func _on_figure_buttons_container_figure_chosen(figure_specs: Dictionary) -> void:
 	# Only place the figure if there is a measure selected
 	if staff.highlighted_measure:
-		staff.highlighted_measure.place_figure(figure_specs, current_page_index)
+		staff.highlighted_measure.place_figure(figure_specs)
 
 
 ## Same thing happens to barlines.
 func _on_tools_menu_barline_chosen(barline: Types.BARLINES) -> void:
 	if staff.highlighted_measure:
-		staff.highlighted_measure.barline_type = barline
+		if barline == Types.BARLINES.STARTREP:
+			staff.highlighted_measure.is_start_repeat = not staff.highlighted_measure.is_start_repeat
+		else:
+			staff.highlighted_measure.barline_type = barline
 
 
 func _on_erase_button_pressed() -> void:
@@ -172,7 +217,8 @@ func _on_page_changed(page_i: int) -> void:
 func _on_change_measures_submitted(amount: int, add: bool) -> void:
 	staff.highlighted_measure = null
 	if add:
-		staff.add_measures(amount)
+		for _i in amount:
+			staff.add_measure()
 	else:
 		# "await" is needed here beause "update_page_values()" must be called only after all measure and page deletion is properly handled
 		await staff.remove_measures(amount)
@@ -182,12 +228,82 @@ func _on_change_measures_submitted(amount: int, add: bool) -> void:
 	MenuManager.return_to_first()
 
 
-## Callback from the load audio menu
-func _on_audio_chosen(audio: AudioStreamMP3) -> void:
-	synchronizer.set_audio(audio)
-	MenuManager.return_to_first()
+## Sets the audio_path of the Synchronizer. Its setter takes care of loading the actual audio to the audio_stream_player
+func _on_audio_chosen(audio_path: String) -> void:
+	synchronizer.audio_path = audio_path
+
+
+func _on_tempo_submitted(tempo: int) -> void:
+	synchronizer.track_bpm = tempo
+
+
+func _on_delay_submitted(delay: float) -> void:
+	synchronizer.first_highlight_delay = delay
 
 
 ## Callback from the forwarded signal from one of the marker menus. The type is sent to the MarkerTracker for its creation and placement
 func _on_editors_menu_marker_chosen(marker: Selectable) -> void:
 	marker_tracker.add_marker(marker)
+
+
+## Callback that executes when the save button is pressed
+func _on_save_project_requested(project_name: String) -> void:
+	# In order to keep the projects easily accessible (and to allow the software to access saved projects from any computer), a folder "projects" is created on the folder where the executable is stored. The project is saved in that folder.
+	# First, we get the folder of the executable  
+	var program_folder := OS.get_executable_path().get_base_dir()
+	# Then we createa path to a savefile (with the name chosen by the user) inside "projects", inside that folder
+	var file_name :=  program_folder + "/projects/%s.save" % project_name
+	# And then we open said file (or create one, if it does not exist yet) to write our info there
+	var save_project = FileAccess.open(file_name, FileAccess.WRITE)
+	
+	# Next we store the different info in several vars:
+	
+	# Save misc vars
+	var misc_vars := {
+		"beats_per_measure": staff._beats_per_measure,
+	}
+	
+	# Save measures and figures. The way this array is organized is as follows:
+		# each dict inside the measures_figures represents a measure
+		# that measure has a barline_type, is_start_repeat, and figures, the latter linked to an array
+		# that array contains dicts, each one representing a figure inside the respective measure
+		# each of those dicts contain a duration and an is_rest
+	# This way we have the entire hierarchy of measures and figures in a single array
+	var measures_figures := []
+	for measure in staff.get_measures():
+		var measure_dict := {}
+		measure_dict["barline_type"] = measure.barline_type
+		measure_dict["is_start_repeat"] = measure.is_start_repeat
+		var figures := []
+		for figure in measure.get_figures():
+			var figure_dict := {}
+			figure_dict["duration"] = figure.duration
+			figure_dict["is_rest"] = figure.is_rest
+			figures.append(figure_dict)
+		measure_dict["figures"] = figures
+		measures_figures.append(measure_dict)
+	
+	# Save Markers. Similar to measures_figures. This time however, each page is simply an array of markers (and not a dict), because we only have markers to save. Each Marker is a dict with a position and a texture_path
+	var pages_markers := []
+	for page in staff.get_pages():
+		var markers := []
+		for marker in page.markers.get_children():
+			var marker_dict := {
+				"pos_x": marker.position.x,
+				"pos_y": marker.position.y,
+				"texture_path": marker.texture_path,
+			}
+			markers.append(marker_dict)
+		pages_markers.append(markers)
+	
+	# Save Synchronizer vars. get_saved_vars() already creates the dictionary in the proper format
+	var synchronizer_vars := synchronizer.get_saved_vars()
+	
+	# Finally, we take each of those variables containing the saved data, put them in an array, and loop through them to store them one per line in a JSON file
+	var complete_data := [misc_vars, measures_figures, pages_markers, synchronizer_vars]
+	for data in complete_data:
+		var json_string := JSON.stringify(data)
+		save_project.store_line(json_string)
+	
+	# Open the window saying the project was successfully saved
+	save_confirmed.show()
