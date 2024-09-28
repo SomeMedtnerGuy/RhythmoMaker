@@ -20,7 +20,7 @@ This project started as a tool for my mom to use, so the features present are su
 
 
 <!-- GETTING STARTED -->
-## Getting Started
+## Getting Started (CURRENTLY NOT AVAILABLE)
 
 All that is needed is to download the latest version of the project from  [this link](https://drive.google.com/drive/folders/14EzbgPs6xNWwsRa-FlGkv6kf6RbABdvQ?usp=drive_link) and export the two files in there. Then, click on the executable to open the program. (The other file, ending in .pck, should remain untouched).
 
