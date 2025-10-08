@@ -1,9 +1,9 @@
 [gd_scene load_steps=23 format=3 uid="uid://b0nbvvie4kie8"]
 
-[ext_resource type="Script" path="res://EditorsMenu/general_editor.gd" id="1_epdld"]
+[ext_resource type="Script" uid="uid://8nbrcke2xhpa" path="res://EditorsMenu/general_editor.gd" id="1_epdld"]
 [ext_resource type="Texture2D" uid="uid://wricyuwyc3nh" path="res://EditorsMenu/BarlinesEditor/BarlineButtons.png" id="2_c16s4"]
-[ext_resource type="Script" path="res://BaseObjects/self_reference_button.gd" id="3_nutdr"]
-[ext_resource type="Script" path="res://EditorsMenu/EditorTypes/barline_options.gd" id="4_403g5"]
+[ext_resource type="Script" uid="uid://dawggg7hj2ueg" path="res://BaseObjects/self_reference_button.gd" id="3_nutdr"]
+[ext_resource type="Script" uid="uid://dqkm6kvc4i3n" path="res://EditorsMenu/EditorTypes/barline_options.gd" id="4_403g5"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dyild"]
 atlas = ExtResource("2_c16s4")

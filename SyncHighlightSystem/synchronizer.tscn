@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://d3i4yng2jvopl"]
 
-[ext_resource type="Script" path="res://SyncHighlightSystem/synchronizer.gd" id="1_bqwdp"]
+[ext_resource type="Script" uid="uid://80oscixxhqfp" path="res://SyncHighlightSystem/synchronizer.gd" id="1_bqwdp"]
 
 [node name="Synchronizer" type="Node"]
 script = ExtResource("1_bqwdp")

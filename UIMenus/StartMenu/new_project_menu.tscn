@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bbt7alb8u3lnj"]
 
 [ext_resource type="Theme" uid="uid://0h50ls5hrk6i" path="res://AssetsAndResources/main_theme.tres" id="1_8iqfa"]
-[ext_resource type="Script" path="res://UIMenus/StartMenu/new_project_menu.gd" id="2_jsmyj"]
+[ext_resource type="Script" uid="uid://drmkmx1ccvovo" path="res://UIMenus/StartMenu/new_project_menu.gd" id="2_jsmyj"]
 [ext_resource type="LabelSettings" uid="uid://n2d5yag6peyq" path="res://AssetsAndResources/TitleLabelSettings.tres" id="3_aungq"]
 [ext_resource type="PackedScene" uid="uid://d166ixo2ko56k" path="res://BaseObjects/settings_edit_field_base.tscn" id="4_x88q5"]
 

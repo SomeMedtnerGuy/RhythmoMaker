@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bpp0ult43jc3q"]
 
 [ext_resource type="Texture2D" uid="uid://cm1srog676pjv" path="res://Figure/FiguresSpritesheetDynamic.png" id="1_s2bc3"]
-[ext_resource type="Script" path="res://Figure/figure.gd" id="2_ntgxh"]
+[ext_resource type="Script" uid="uid://ds4g8bwao52c5" path="res://Figure/figure.gd" id="2_ntgxh"]
 
 [node name="Figure" type="Sprite2D"]
 modulate = Color(0, 0, 0, 1)

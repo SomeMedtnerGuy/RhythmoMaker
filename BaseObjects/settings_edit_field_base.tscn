@@ -2,7 +2,7 @@
 
 [ext_resource type="FontFile" uid="uid://dcprkn2psj6lk" path="res://AssetsAndResources/PublicPixel-z84yD.ttf" id="1_4jxre"]
 [ext_resource type="Theme" uid="uid://0h50ls5hrk6i" path="res://AssetsAndResources/main_theme.tres" id="1_ne5gt"]
-[ext_resource type="Script" path="res://BaseObjects/settings_edit_field_base.gd" id="2_ps6sh"]
+[ext_resource type="Script" uid="uid://7na3njv67uan" path="res://BaseObjects/settings_edit_field_base.gd" id="2_ps6sh"]
 
 [node name="SettingsEditField" type="HBoxContainer"]
 anchors_preset = 10

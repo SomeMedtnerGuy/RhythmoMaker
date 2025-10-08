@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://c6nm2hjowhamv"]
 
-[ext_resource type="Script" path="res://Measure/measure.gd" id="1_qhife"]
+[ext_resource type="Script" uid="uid://doutmj1q8ng06" path="res://Measure/measure.gd" id="1_qhife"]
 [ext_resource type="Texture2D" uid="uid://rc0on0kdbji7" path="res://Measure/Barlines.png" id="2_m00f0"]
 
 [sub_resource type="Curve2D" id="Curve2D_2ym76"]

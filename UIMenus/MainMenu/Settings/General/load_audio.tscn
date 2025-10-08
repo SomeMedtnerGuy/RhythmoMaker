@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://b051m2sijexrn"]
 
 [ext_resource type="PackedScene" uid="uid://yx0e6j2h537r" path="res://BaseObjects/base_menu.tscn" id="1_158yc"]
-[ext_resource type="Script" path="res://UIMenus/MainMenu/Settings/General/load_audio.gd" id="2_7abui"]
+[ext_resource type="Script" uid="uid://b7irlw7oy8lmf" path="res://UIMenus/MainMenu/Settings/General/load_audio.gd" id="2_7abui"]
 [ext_resource type="PackedScene" uid="uid://d166ixo2ko56k" path="res://BaseObjects/settings_edit_field_base.tscn" id="2_glfmc"]
 
 [node name="LoadAudio" instance=ExtResource("1_158yc")]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://c2btivcth2gxk"]
 
 [ext_resource type="PackedScene" uid="uid://yx0e6j2h537r" path="res://BaseObjects/base_menu.tscn" id="1_11c6a"]
-[ext_resource type="Script" path="res://UIMenus/StartMenu/open_menu.gd" id="2_6fphv"]
+[ext_resource type="Script" uid="uid://d0n4485ci23t4" path="res://UIMenus/StartMenu/open_menu.gd" id="2_6fphv"]
 [ext_resource type="PackedScene" uid="uid://d166ixo2ko56k" path="res://BaseObjects/settings_edit_field_base.tscn" id="3_a0mfd"]
 
 [node name="OpenMenu" instance=ExtResource("1_11c6a")]

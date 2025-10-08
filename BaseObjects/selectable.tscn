@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cq2thkwi8ns36"]
 
-[ext_resource type="Script" path="res://BaseObjects/selectable.gd" id="1_22ng8"]
+[ext_resource type="Script" uid="uid://del6wb1eyd452" path="res://BaseObjects/selectable.gd" id="1_22ng8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_elv41"]
 radius = 50.0

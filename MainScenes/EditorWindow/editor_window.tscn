@@ -1,8 +1,8 @@
 [gd_scene load_steps=17 format=3 uid="uid://bpgyt2q4qebqt"]
 
-[ext_resource type="Script" path="res://MainScenes/EditorWindow/editor_window.gd" id="1_06pkd"]
-[ext_resource type="Script" path="res://Measure/staff.gd" id="2_0wgmb"]
-[ext_resource type="Script" path="res://marker_tracker.gd" id="3_mgall"]
+[ext_resource type="Script" uid="uid://ddwbyee5v6tld" path="res://MainScenes/EditorWindow/editor_window.gd" id="1_06pkd"]
+[ext_resource type="Script" uid="uid://b2ecytqbvf3w3" path="res://Measure/staff.gd" id="2_0wgmb"]
+[ext_resource type="Script" uid="uid://bxtqpha1jkofc" path="res://marker_tracker.gd" id="3_mgall"]
 [ext_resource type="PackedScene" uid="uid://d3i4yng2jvopl" path="res://SyncHighlightSystem/synchronizer.tscn" id="4_dgrg8"]
 [ext_resource type="PackedScene" uid="uid://ddve6ma1p2w14" path="res://PlaybackObjects/manual_duration_setting_ui.tscn" id="5_hwvl5"]
 [ext_resource type="FontFile" uid="uid://dcprkn2psj6lk" path="res://AssetsAndResources/PublicPixel-z84yD.ttf" id="6_2sixr"]
@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://dqfsn3vvpbvxn" path="res://MainScenes/EditorWindow/EraseButtonPressed.png" id="11_o555v"]
 [ext_resource type="Texture2D" uid="uid://eadxnb0lrul2" path="res://PlaybackObjects/PlayButton.png" id="12_8v7ey"]
 [ext_resource type="Texture2D" uid="uid://mqvrpsujuce8" path="res://PlaybackObjects/StopButtonPressed.png" id="13_pptx1"]
-[ext_resource type="Script" path="res://PlaybackObjects/playback_button.gd" id="14_3t1b5"]
+[ext_resource type="Script" uid="uid://tpy1vx43borh" path="res://PlaybackObjects/playback_button.gd" id="14_3t1b5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pyj1h"]
 bg_color = Color(0, 0.470588, 0.6, 1)
