@@ -15,18 +15,19 @@ This project started as a tool for my mom to use, so the features present are su
 ### Built With
 
 - Engine: Godot [https://godotengine.org/](https://godotengine.org/)
-- Sprite Assets: Pixelorama [https://orama-interactive.itch.io/pixelorama](https://orama-interactive.itch.io/pixelorama)
+- Tool used for Sprite Assets: Pixelorama [https://orama-interactive.itch.io/pixelorama](https://orama-interactive.itch.io/pixelorama)
 
 
 
 <!-- GETTING STARTED -->
-## Getting Started (CURRENTLY NOT AVAILABLE)
+## Getting Started
 
-All that is needed is to download the latest version of the project from  [this link](https://drive.google.com/drive/folders/14EzbgPs6xNWwsRa-FlGkv6kf6RbABdvQ?usp=drive_link) and export the two files in there. Then, click on the executable to open the program. (The other file, ending in .pck, should remain untouched).
+All that is needed is to download the latest version of the project from the release section of github (.exe for Windows, .x86_64 for Linux).
 
-*Note: Windows might show a warning about how the software might not be safe, simply because it has no way of making sure that I did not write mallicious code in there. In order to bypass that, I'd have to pay for a key, which for a sideproject is quite expensive right now. (I haven't changed the logo of the program, otherwise the warning would be worse.) Therefore, if you would not like to risk it, I understand! I plan to get that key asap and I'll inform you here when that happens. :)* 
+*Note: You might have to give executable permissions to the Linux version to be able to run it.*
+*Note: Windows might show a warning about how the software might not be safe, simply because it has no way of making sure that I did not write mallicious code in there. In order to bypass that, I'd have to pay for a key, which for a sideproject is quite expensive right now. (I haven't changed the logo of the program, otherwise the warning would be worse.) Therefore, if you would not like to risk it, I understand! I plan to get that key asap and I'll inform you here when that happens.* 
 
-If you look into the folder again, you will see that two new folders were created, called "audio" and "projects". In "audio", you place all the music you want to build the rhythmograms to, for easy access. You will not have to open the "projects" folder, as it is the folder the program will use to save and load projects in a format it can read, so no need to worry about that one!
+After opening the program, if you look into the folder again, you will see that two new folders were created, called "audio" and "projects". In "audio", you place all the music you want to build the rhythmograms to, for easy access. You will not have to open the "projects" folder, as it is the folder the program will use to save and load projects in a format it can read, so no need to worry about that one!
 
 So all you have to do is to simply place your mp3 files in the "audio" folder and you are good to go! You can even take the RhythmoMaker folder, place it in a pendrive or upload it to a cloud, and reuse it in whichever computer you'd like - all music and projects will be accessible!
 
@@ -102,9 +103,3 @@ Nuno Ventura de Sousa - nunoventuradesousa@gmail.com
 
 Project Link: [https://github.com/SomeMedtnerGuy/RhythmoMaker](https://github.com/SomeMedtnerGuy/RhythmoMaker)
 
-
-
-<!-- ACKNOWLEDGeMENTS -->
-## Acknowledgements
-
-Portion of readme template by @kidonng
