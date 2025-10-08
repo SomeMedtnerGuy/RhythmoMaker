@@ -25,6 +25,7 @@ This project started as a tool for my mom to use, so the features present are su
 All that is needed is to download the latest version of the project from the release section of github (.exe for Windows, .x86_64 for Linux).
 
 *Note: You might have to give executable permissions to the Linux version to be able to run it.*
+
 *Note: Windows might show a warning about how the software might not be safe, simply because it has no way of making sure that I did not write mallicious code in there. In order to bypass that, I'd have to pay for a key, which for a sideproject is quite expensive right now. (I haven't changed the logo of the program, otherwise the warning would be worse.) Therefore, if you would not like to risk it, I understand! I plan to get that key asap and I'll inform you here when that happens.* 
 
 After opening the program, if you look into the folder again, you will see that two new folders were created, called "audio" and "projects". In "audio", you place all the music you want to build the rhythmograms to, for easy access. You will not have to open the "projects" folder, as it is the folder the program will use to save and load projects in a format it can read, so no need to worry about that one!
